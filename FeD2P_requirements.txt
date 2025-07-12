@@ -11,3 +11,4 @@ pandas==2.2.3
 keras==3.6.0
 matplotlib==3.10.0
 datasets==3.6.0
+psutil
