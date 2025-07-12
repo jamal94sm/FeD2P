@@ -8,14 +8,14 @@
 #SBATCH --mail-type=ALL
 
 #cd /home/shahab33/projects/def-arashmoh/shahab33/FeDK2P
-cd /project/def-arashmoh/shahab33/Rohollah/projects/FeDK2P/FeDK2P
+cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P
 
 
 module purge
 module load python
 module load cuda
 
-#source ~/FeDK2P/bin/activate  	# activate your environment
-source /project/def-arashmoh/shahab33/Rohollah/projects/FeDK2P/FeDK2P/fedk2p/bin/activate 
+#source ~/fed2p/bin/activate  	# activate your environment
+source /project/def-arashmoh/shahab33/fed2p/bin/activate 
 
-python fedk2p.py   	# this is the direction and the name of your code
+python main.py   	# this is the direction and the name of your code
