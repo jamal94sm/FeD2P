@@ -15,7 +15,7 @@ module purge
 module load python
 module load cuda
 
-#source ~/fed2p/bin/activate  	# activate your environment
-source /project/def-arashmoh/shahab33/fed2p/bin/activate 
+source /home/shahab33/fed2p/bin/activate  	# activate your environment
+#source /project/def-arashmoh/shahab33/fed2p/bin/activate 
 
 python main.py   	# this is the direction and the name of your code
