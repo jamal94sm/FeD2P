@@ -13,7 +13,7 @@ def get_args():
     parser.add_argument('--device', type=str, default="cuda" if torch.cuda.is_available() else "cpu") 
     #parser.add_argument('--device',default="mps" if torch.backends.mps.is_available() else "cpu")# for runing on mps MAC OS
     parser.add_argument('--num_clients', type=int, default=5)
-    parser.add_argument('--local_model_name', type=str, default="ResNet18") #ResNet11
+    parser.add_argument('--local_model_name', type=str, default="ResNet18") #ResNet10, MobileNetV2
     parser.add_argument('--num_train_samples', type=int, default=10000)
     parser.add_argument('--num_test_samples', type=int, default=3000)
     parser.add_argument('--dataset', type=str, default="cifar10")
