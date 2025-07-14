@@ -53,7 +53,6 @@ def data_distributing(centralized_data, num_classes):
     samples = np.random.dirichlet(np.ones(num_classes)*args.alpha_dirichlet, size=args.num_clients)
     num_samples = np.array(samples*int(len(train_data)/args.num_clients))
     num_samples = num_samples.astype(int)
-    print(num_samples)
 
 
     available_data = train_data["label"]
