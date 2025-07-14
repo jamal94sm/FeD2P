@@ -285,7 +285,7 @@ def plot(arrays, names = [""], title='....', xlabel='rounds', ylabel='accuracy %
     plt.tight_layout()
     plt.savefig("plots/"+file_name+".png")
     
-    plt.show() 
+    #plt.show() 
     
     
 
