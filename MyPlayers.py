@@ -172,8 +172,14 @@ class Device():
             self.model = MyModels.ResNet18(data["train"]["image"][0].shape, self.num_classes).to(args.device) #ResNet18
         elif args.local_model_name=="ResNet10":
             self.model = MyModels.ResNet10(data["train"]["image"][0].shape, self.num_classes).to(args.device) #ResNet10
+        elif args.local_model_name=="ResNet20":
+            self.model = MyModels.ResNet20(data["train"]["image"][0].shape, self.num_classes).to(args.device) #ResNet20
+        elif args.local_model_name=="EfficientNet":
+            self.model = MyModels.EfficientNet(data["train"]["image"][0].shape, self.num_classes).to(args.device) #EfficientNet
 
-        
+
+
+
         MyUtils.Model_Size(self.model)
 
 
