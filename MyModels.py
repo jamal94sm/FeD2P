@@ -320,14 +320,59 @@ class ResNet10(ResNet):
 
         self.fc = nn.Linear(self.fc.in_features, num_classes)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+##############################################################################################################
+##############################################################################################################
+import torch
+import torch.nn as nn
+from torchvision.models.resnet import BasicBlock, ResNet
+
+class ResNet20(ResNet):
+    def __init__(self, input_shape=(3, 32, 32), num_classes=10):
+        super(ResNet20, self).__init__(block=BasicBlock, layers=[3, 3, 3, 0])
+
+        if input_shape[1] < 64 or input_shape[2] < 64:
+            self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+            self.maxpool = nn.Identity()
+
+        self.fc = nn.Linear(self.fc.in_features, num_classes)
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
 
+##############################################################################################################
+##############################################################################################################
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
 
+class EfficientNet(nn.Module):
+    def __init__(self, input_shape=(3, 32, 32), num_classes=10):
+        super(EfficientNet, self).__init__()
 
+        # Load pretrained EfficientNet-B0 backbone
+        self.backbone = efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
+        self.backbone.classifier = nn.Identity()  # Remove original classifier
 
+        # Determine the number of features output by the backbone
+        with torch.no_grad():
+            dummy_input = torch.zeros(1, *input_shape)
+            dummy_input_resized = nn.functional.interpolate(dummy_input, size=(224, 224), mode='bilinear')
+            features = self.backbone(dummy_input_resized)
+            feature_dim = features.shape[1]
 
+        # Custom classifier
+        self.fc1 = nn.Linear(feature_dim, 512)
+        self.dropout = nn.Dropout(0.3)
+        self.fc2 = nn.Linear(512, num_classes)
 
-
+    def forward(self, x):
+        # Resize input to match EfficientNet expected input size
+        x = F.interpolate(x, size=(224, 224), mode='bilinear')
+        x = self.backbone(x)
+        x = F.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.fc2(x)
+        return x
 
 ##############################################################################################################
 ##############################################################################################################
