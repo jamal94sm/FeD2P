@@ -265,27 +265,31 @@ def adjust_temperature_orginal(inputs, iteration, optimal_temperature, is_softma
         probabilities = torch.nn.functional.softmax(inputs / optimal_temperature, dim=1)
     return probabilities, optimal_temperature
 ############################################################################################################## 
-def plot(arrays, names = [""], title='....', xlabel='rounds', ylabel='accuracy %', file_name="figure"):
-    
-    arrays = np.array(arrays)
-    if len(arrays)!= len(names):
+def plot(arrays, names=[""], title='Comparison of Arrays', xlabel='rounds', ylabel='accuracy %', file_name="figure"):
+    # Convert to numpy array with dtype=object to handle inhomogeneous sequences
+    arrays = np.array(arrays, dtype=object)
+
+    # Ensure names list matches the number of arrays
+    if len(arrays) != len(names):
         names += [""] * abs(len(arrays) - len(names))
 
-    if arrays.ndim == 1:
-        arrays = np.expand_dims(arrays, axis=0)  
+    # Create plots directory if it doesn't exist
+    os.makedirs("plots", exist_ok=True)
+
     plt.figure()
     for arr, name in zip(arrays, names):
+        arr = np.array(arr)  # Convert each individual array to numpy array
         plt.plot(arr, label=name)
 
-    plt.title("Comparison of Arrays")
-    plt.xlabel("Index")
-    plt.ylabel("Value")
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig("plots/"+file_name+".png")
-    
-    #plt.show() 
+    plt.savefig(f"plots/{file_name}.png")
+    plt.show()
+
     
     
 
