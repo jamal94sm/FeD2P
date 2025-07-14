@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --account=def-arashmoh
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:t4:1  # t4 or v100 or a100 or dgx or a5000 or h100
+#SBATCH --gpus=a100_2g.10gb:1  # t4 or v100 or a100 or dgx or a5000 or h100
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4 # 8, 16
-#SBATCH --mem=32G               # memory per node (ex: 16G) you can get more 
-#SBATCH --time=01:00:00 		   # time period you need for your code (it is 12 hours for example)
+#SBATCH --mem=20G               # memory per node (ex: 16G) you can get more 
+#SBATCH --time=02:00:00 		   # time period you need for your code (it is 12 hours for example)
 #SBATCH --mail-user=<jamal73sm@gmail.com> 	# replace with your email address to get emails to know when it is started or failed. 
 #SBATCH --mail-type=ALL
 
