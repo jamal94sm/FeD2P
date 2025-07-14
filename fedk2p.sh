@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=def-arashmoh
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:dgx:1  # t4 or v100 or a100 or dgx or a5000 or h100
+#SBATCH --gres=gpu:a100:1  # t4 or v100 or a100 or dgx or a5000 or h100
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4 # 8, 16
 #SBATCH --mem=16G               # memory per node (ex: 16G) you can get more 
