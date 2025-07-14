@@ -350,7 +350,7 @@ class EfficientNet(nn.Module):
         super(EfficientNet, self).__init__()
 
         # Load pretrained EfficientNet-B0 backbone
-        self.backbone = efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
+        self.backbone = efficientnet_b0(weights=None)
         self.backbone.classifier = nn.Identity()  # Remove original classifier
 
         # Determine the number of features output by the backbone
