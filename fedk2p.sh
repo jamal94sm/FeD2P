@@ -10,14 +10,20 @@
 #SBATCH --mail-type=ALL
 
 #cd /home/shahab33/projects/def-arashmoh/shahab33/FeDK2P
-cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P
+
+#cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
+
+cd /project/def-arashmoh/shahab33/FeD2P #Narval 
 
 
 module purge
 module load python
 module load cuda
 
-source /home/shahab33/fed2p/bin/activate  	# activate your environment
+#source /home/shahab33/fed2p/bin/activate  	# activate your environment
+
 #source /project/def-arashmoh/shahab33/fed2p/bin/activate 
+
+source /home/shahab33/fed2p/bin/activate #Narval
 
 python main.py   	# this is the direction and the name of your code
