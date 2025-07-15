@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument('--dataset', type=str, default="cifar10")
     parser.add_argument('--Foundation_model', type=str, default="openai/clip-vit-base-patch32")
     parser.add_argument('--rounds', type=int, default=50)
-    parser.add_argument('--local_learning_rate', type=float, default=0.001)
+    parser.add_argument('--local_learning_rate', type=float, default=0.01)
     parser.add_argument('--local_batch_size', type=int, default=64)
     parser.add_argument('--local_epochs', type=int, default=1)
     parser.add_argument('--global_learning_rate', type=float, default=0.01)
