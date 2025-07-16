@@ -26,4 +26,4 @@ module load cuda
 
 source /home/shahab33/fed2p/bin/activate #Narval
 
-python main.py   	# this is the direction and the name of your code
+python main.py --local_model_name EfficientNet   	# this is the direction and the name of your code
