@@ -62,13 +62,17 @@ def data_distributing(centralized_data, num_classes):
         for c in range(num_classes):
             num = num_samples[i][c]
             
-            if num == 0: num = 1 
+            
             if (available_data == c).sum().item() < num: num = (available_data == c).sum().item()
+            
+            if num == 0: 
+                idx_per_class = np.random.choice( np.where(train_data["label"]==c)[0], 1 , replace=False)
+                idx_for_client.extend( idx_per_class )
+            else:
+                idx_per_class = np.random.choice( np.where(available_data==c)[0], num , replace=False)
+                idx_for_client.extend( idx_per_class )
+                available_data[idx_per_class] = -1000            
 
-            idx_per_class = np.random.choice( np.where(available_data==c)[0], num , replace=False)
-            idx_for_client.extend( idx_per_class )
-
-            available_data[idx_per_class] = -1000
 
             
         random.shuffle(idx_for_client)
