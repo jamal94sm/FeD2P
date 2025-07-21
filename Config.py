@@ -9,13 +9,14 @@ import torch
 def get_args():
     parser = argparse.ArgumentParser(description="Federated Learning with Prompt Tuning")
 
+    parser.add_argument('--output_name', default="alpha 0.1_")
     parser.add_argument('--setup', default="local")
     parser.add_argument('--device', type=str, default="cuda" if torch.cuda.is_available() else "cpu") 
     #parser.add_argument('--device',default="mps" if torch.backends.mps.is_available() else "cpu")# for runing on mps MAC OS
     parser.add_argument('--num_clients', type=int, default=10)
     parser.add_argument('--local_model_name', type=str, default="ResNet20") # EfficientNet, ResNet20, ResNet18, ResNet10, MobileNetV2
     parser.add_argument('--num_train_samples', type=int, default=50_000)
-    parser.add_argument('--num_test_samples', type=int, default=3000)
+    parser.add_argument('--num_test_samples', type=int, default=3_000)
     parser.add_argument('--dataset', type=str, default="cifar10")
     parser.add_argument('--Foundation_model', type=str, default="openai/clip-vit-base-patch32")
     parser.add_argument('--rounds', type=int, default=50)
