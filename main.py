@@ -150,7 +150,7 @@ def main():
 
     # ===================== Save Results =====================
     avg_test_Acc = np.mean([client.test_Acc for client in clients], axis=0)
-    MyUtils.save_as_json(avg_test_Acc, args, file_name="accuracy_"+args.setup)
+    MyUtils.save_as_json(avg_test_Acc, args, file_name= "alpha 0.1_" + "accuracy_"+args.setup)
 
 
 
