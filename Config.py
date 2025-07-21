@@ -9,7 +9,7 @@ import torch
 def get_args():
     parser = argparse.ArgumentParser(description="Federated Learning with Prompt Tuning")
 
-    parser.add_argument('--output_name', default="alpha 0.1_")
+    parser.add_argument('--output_name', default="01")
     parser.add_argument('--setup', default="local")
     parser.add_argument('--device', type=str, default="cuda" if torch.cuda.is_available() else "cpu") 
     #parser.add_argument('--device',default="mps" if torch.backends.mps.is_available() else "cpu")# for runing on mps MAC OS
