@@ -19,14 +19,14 @@ def load_clip_model():
     tokenizer = transformers.AutoTokenizer.from_pretrained(model_name, use_fast=False)
 
     if "BN" in args.setup: 
+        print("Unfreeze LayerNorm layers in the image encoder")
         # Unfreeze LayerNorm layers in the image encoder
         for module in model.vision_model.modules():
             if isinstance(module, torch.nn.LayerNorm):
                 module.train()  # Set to training mode
                 for param in module.parameters():
                     param.requires_grad = True
-
-    
+                    
     return model, processor, tokenizer
 ##############################################################################################################
 ##############################################################################################################
