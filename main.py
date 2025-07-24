@@ -187,9 +187,9 @@ if __name__ == "__main__":
     configurations = [
         #{"setup": "ft_sift_M_mean_yn"},
         #{"setup": "ft_M_mean_yn"},
-        #{"setup": "ft_M_yn"},
         #{"setup": "ft_yn"},
         {"setup": "ft_BN_M_yn"},
+        {"setup": "ft_M_yn"},
     ]
 
     for config in configurations:
@@ -220,12 +220,13 @@ if __name__ == "__main__":
 
 
     # ===================== Get virtual memory details===================== 
+    '''
     mem = psutil.virtual_memory() 
     print(f"Total Memory: {mem.total / (1024 ** 3):.2f} GB")
     print(f"Available Memory: {mem.available / (1024 ** 3):.2f} GB")
     print(f"Used Memory: {mem.used / (1024 ** 3):.2f} GB")
     print(f"Memory Usage: {mem.percent}%")
-
+    '''
 
 
 
