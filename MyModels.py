@@ -17,19 +17,17 @@ def load_clip_model():
     model = transformers.CLIPModel.from_pretrained(model_name)
     processor = transformers.CLIPProcessor.from_pretrained(model_name, use_fast=False)
     tokenizer = transformers.AutoTokenizer.from_pretrained(model_name, use_fast=False)
-    print(args.setup)
-    print(args.setup)
-    print(args.setup)
     
-    if "BN" in args.setup: 
-        print("Unfreeze LayerNorm layers in the image encoder")
-        9/0
-        # Unfreeze LayerNorm layers in the image encoder
-        for module in model.vision_model.modules():
-            if isinstance(module, torch.nn.LayerNorm):
-                module.train()  # Set to training mode
-                for param in module.parameters():
-                    param.requires_grad = True
+    #if "BN" in args.setup: 
+    print("Unfreeze LayerNorm layers in the image encoder")
+    print("Unfreeze LayerNorm layers in the image encoder")
+    print("Unfreeze LayerNorm layers in the image encoder")
+    # Unfreeze LayerNorm layers in the image encoder
+    for module in model.vision_model.modules():
+        if isinstance(module, torch.nn.LayerNorm):
+            module.train()  # Set to training mode
+            for param in module.parameters():
+                param.requires_grad = True
                     
     return model, processor, tokenizer
 ##############################################################################################################
