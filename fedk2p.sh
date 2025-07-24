@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=def-arashmoh
 #SBATCH --nodes=1
-#SBATCH --gpus=v100l:1  # Graham: t4 or v100 or a100 or dgx or a5000 or h100; Narval: a100, a100_4g.20g; Cedar: p100, p100l, v100l, a40
+#SBATCH --gpus=a100:1  # Graham: t4 or v100 or a100 or dgx or a5000 or h100; Narval: a100, a100_4g.20g; Cedar: p100, p100l, v100l, a40
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4 # 8, 16
 #SBATCH --mem=40G               # memory per node (ex: 16G) you can get more 
@@ -10,21 +10,21 @@
 #SBATCH --mail-type=ALL
 
 
-cd /home/shahab33/projects/def-arashmoh/shahab33/FeD2P #Cedar
+#cd /home/shahab33/projects/def-arashmoh/shahab33/FeD2P #Cedar
 
 #cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
 
-#cd /project/def-arashmoh/shahab33/FeD2P #Narval 
+cd /project/def-arashmoh/shahab33/FeD2P #Narval 
 
 
 module purge
 module load python
 module load cuda
 
-source /home/shahab33/FeDK2P/bin/activate  	# Cedar
+#source /home/shahab33/FeDK2P/bin/activate  	# Cedar
 
 #source /home/shahab33/fed2p/bin/activate #Graham
 
-#source /home/shahab33/fed2p/bin/activate #Narval
+source /home/shahab33/fed2p/bin/activate #Narval
 
 python main.py --alpha_dirichlet 100 --output_name "BN_"  	# this is the direction and the name of your code
