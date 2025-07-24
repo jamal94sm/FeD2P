@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     # ===================== Dataset and Model Loading =====================
     Dataset, num_classes, name_classes = MyDatasets.load_data_from_Huggingface()
-    FM, processor, tokenizer = MyModels.load_clip_model()
+    #FM, processor, tokenizer = MyModels.load_clip_model()
 
 
 
@@ -197,11 +197,20 @@ if __name__ == "__main__":
             
         separator = "=" * 40
         print(f"\n{separator} Running configuration: {args.setup} {separator}")
-    
+
+        ### Load the CLIP model for each setup 
+        FM, processor, tokenizer = MyModels.load_clip_model()
+        
         main()
 
         print(f"{separator} Simulation is over for configuration {args.setup} {separator}\n")
 
+        # Free-up the memory 
+        del FM
+        del processor
+        del tokenizer
+        gc.collect()
+        torch.cuda.empty_cache()
     
 
 
