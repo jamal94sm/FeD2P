@@ -187,7 +187,7 @@ if __name__ == "__main__":
     configurations = [
         #{"setup": "ft_sift_M_mean_yn"},
         #{"setup": "ft_M_mean_yn"},
-        {"setup": "ft_M_yn"},
+        #{"setup": "ft_M_yn"},
         #{"setup": "ft_yn"},
         {"setup": "ft_BN_M_yn"},
     ]
