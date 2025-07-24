@@ -26,4 +26,4 @@ module load cuda
 
 source /home/shahab33/fed2p/bin/activate #Narval
 
-python main.py --alpha_dirichlet 1 --output_name "BN_"  	# this is the direction and the name of your code
+python main.py --alpha_dirichlet 100 --output_name "BN_"  	# this is the direction and the name of your code
