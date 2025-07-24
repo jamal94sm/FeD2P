@@ -180,15 +180,16 @@ if __name__ == "__main__":
     # ===================== Data Distribution =====================
     distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes)
     print("\n ]data distribution of devices: \n", num_samples)
-
+ 
 
 
     # ===================== Run for each configuration =====================
     configurations = [
-        {"setup": "ft_sift_M_mean_yn"},
-        {"setup": "ft_M_mean_yn"},
+        #{"setup": "ft_sift_M_mean_yn"},
+        #{"setup": "ft_M_mean_yn"},
         {"setup": "ft_M_yn"},
-        {"setup": "ft_yn"},
+        #{"setup": "ft_yn"},
+        {"setup": "ft_BN_M_yn"},
     ]
 
     for config in configurations:
