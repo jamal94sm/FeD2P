@@ -9,21 +9,22 @@
 #SBATCH --mail-user=<jamal73sm@gmail.com> 	# replace with your email address to get emails to know when it is started or failed. 
 #SBATCH --mail-type=ALL
 
-#cd /home/shahab33/projects/def-arashmoh/shahab33/FeDK2P
+
+cd /home/shahab33/projects/def-arashmoh/shahab33/FeD2P #Cedar
 
 #cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
 
-cd /project/def-arashmoh/shahab33/FeD2P #Narval 
+#cd /project/def-arashmoh/shahab33/FeD2P #Narval 
 
 
 module purge
 module load python
 module load cuda
 
-#source /home/shahab33/fed2p/bin/activate  	# activate your environment
+source /home/shahab33/FeDK2P/bin/activate  	# Cedar
 
 #source /home/shahab33/fed2p/bin/activate #Graham
 
-source /home/shahab33/fed2p/bin/activate #Narval
+#source /home/shahab33/fed2p/bin/activate #Narval
 
 python main.py --alpha_dirichlet 100 --output_name "BN_"  	# this is the direction and the name of your code
