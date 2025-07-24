@@ -18,7 +18,7 @@ def load_clip_model():
     processor = transformers.CLIPProcessor.from_pretrained(model_name, use_fast=False)
     tokenizer = transformers.AutoTokenizer.from_pretrained(model_name, use_fast=False)
 
-    if "BN" is in args.setup: 
+    if "BN" in args.setup: 
         # Unfreeze LayerNorm layers in the image encoder
         for module in model.vision_model.modules():
             if isinstance(module, torch.nn.LayerNorm):
