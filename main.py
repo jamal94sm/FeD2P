@@ -228,7 +228,7 @@ if __name__ == "__main__":
     stored_arrays = []  # Collect all 'stored' arrays
     names = []
     for file in os.listdir(results_dir):
-        if file.endswith(".json"):
+        if file.endswith(".json") and file.startswith(args.output_name):
             with open(os.path.join(results_dir, file), 'r') as f:
                 data = json.load(f)
                 if "stored" in data:
