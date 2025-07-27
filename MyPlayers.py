@@ -20,18 +20,38 @@ class Server():
         self.loss_fn = torch.nn.functional.cross_entropy
         self.Loss = []
         
-    def aggregation(self):
-        coeficients = 1 / torch.stack([client.num_samples for client in self.clients]).sum(dim=0) 
-        summ = torch.stack([client.proto_logits * client.num_samples for client in self.clients]).sum(dim=0)
-        self.ave_proto_logits = summ * coeficients 
-        return self.ave_proto_logits
-
+        
 
     
-    def get_general_knowledge(self):
+    def get_generated_images(self):
         with torch.no_grad():
-            pred = self.model(self.model.basic_text_rep.to(args.device), inference=True)
-        return pred
+            out = self.model.pgen(self.model.z) 
+        return out
+    
+    def train_decoder(self, num_classes):
+        self.zs = []
+                
+        for c in range(num_classes):            
+            print(30*"-", f"Training for class {c}", 30*"-")
+
+            self.model.z = torch.nn.Parameter(torch.randn(args.num_generated_images, 256, 16, 16, device=args.device))   
+            
+            label = c*torch.ones( args.num_generated_images).to(args.device)
+
+
+            for step in range(args.global_epochs):
+                self.optimizer.zero_grad()
+                
+                logits = self.model() 
+                loss = self.loss_fn(logits, label)
+                
+                loss.backward()
+                self.optimizer.step()
+            
+            
+            self.zs.append(self.model.z)
+            
+
     
     def distill_generator(self, logits):
         teacher_knowledge = logits
@@ -62,90 +82,7 @@ class Server():
 
         self.Loss += loss
 
-    def zero_shot(self, data, FM, processor, tokenizer, prototype=False, batch_size=16):
-        
-        processor.image_processor.do_rescale = False
-        processor.image_processor.do_normalize = False
 
-        device = args.device
-        images = data["image"]
-        labels = data["label"]
-
-        img_reps = []
-
-        # Process images in batches
-        for i in range(0, len(images), batch_size):
-            batch_images = images[i:i+batch_size]
-            inputs = processor(
-                text=["blank"] * len(batch_images),
-                images=batch_images,
-                return_tensors="pt"
-                )
-
-            with torch.no_grad():
-                pixel_values = inputs["pixel_values"].to(device)
-                batch_img_rep = FM.get_image_features(pixel_values)
-                batch_img_rep = batch_img_rep / batch_img_rep.norm(p=2, dim=-1, keepdim=True)
-                img_reps.append(batch_img_rep.cpu())  # Move back to CPU to save GPU memory
-
-            del inputs, pixel_values, batch_img_rep
-            torch.cuda.empty_cache()
-
-        img_rep = torch.cat(img_reps, dim=0).to(device)
-
-        with torch.no_grad():
-            text_rep = self.model.basic_text_rep / self.model.basic_text_rep.norm(p=2, dim=-1, keepdim=True)
-            logit_scale = self.model.logit_scale.exp()
-            logits = logit_scale * img_rep @ text_rep.t()
-
-        if not prototype:
-            return logits
-
-        unique_classes = sorted(set(labels.tolist()))
-        num_classes = len(unique_classes)
-        proto_logits = torch.empty((num_classes, num_classes), device=logits.device)
-
-        for c in unique_classes:
-            mask = (labels == c)
-            category_logits = logits[mask].mean(dim=0)
-            proto_logits[c] = category_logits
-
-        return proto_logits
-
-
-
-
-
-    def zero_shot_orginal(self, data, FM, processor, tokenizer, prototype=False):
-        
-        processor.image_processor.do_rescale = False
-        processor.image_processor.do_normalize = False
-        inputs = processor(
-            text=["blank"],
-            images=data["image"],
-            return_tensors="pt"
-        )
-
-        img_rep = FM.get_image_features(inputs["pixel_values"].to(args.device))
-
-        img_rep = img_rep / img_rep.norm(p=2, dim=-1, keepdim=True)
-        text_rep = self.model.basic_text_rep / self.model.basic_text_rep.norm(p=2, dim=-1, keepdim=True)
-        logit_scale = self.model.logit_scale.exp()
-        logits = logit_scale * img_rep @ text_rep.t()
-
-        if not prototype:
-            return logits
-
-        unique_classes = sorted(set(data["label"].tolist()))
-        num_classes = len(unique_classes)
-        proto_logits = torch.empty((num_classes, num_classes), device=logits.device)
-
-        for c in unique_classes:
-            mask = (data["label"] == c)
-            category_logits = logits[mask].mean(dim=0) #Avergae of logits
-            proto_logits[c] = category_logits
-
-        return proto_logits
 
 
 
@@ -223,6 +160,7 @@ class Device():
 
 
         if "sift" in args.setup:
+            print(30*'here')
             predicted = torch.argmax(logits, dim=1)
             correct_mask = (predicted == labels)
             missing_classes = torch.tensor([cls.item() for cls in labels.unique() if cls not in labels[correct_mask].unique()]).to(args.device)
@@ -265,6 +203,9 @@ class Device():
         logits = torch.cat(all_logits, dim=0)
         labels = torch.cat(all_labels, dim=0)
 
+        unique_classes = sorted(set(labels.tolist()))
+        num_classes = len(unique_classes)
+
         if "sift" in args.setup:
             predicted = torch.argmax(logits, dim=1)
             correct_mask = (predicted == labels)
@@ -276,11 +217,11 @@ class Device():
             logits = logits[final_mask]
             labels = labels[final_mask]
 
-        unique_classes = sorted(set(labels.tolist()))
-        num_classes = len(unique_classes)
+
 
         self.proto_logits = torch.empty((num_classes, num_classes), device=logits.device)
 
+        
         for c in unique_classes:
             mask = labels == c
             category_logits = logits[mask].mean(dim=0)
@@ -289,8 +230,6 @@ class Device():
 
 ##############################################################################################################
 ##############################################################################################################
-
-
 
 
 
