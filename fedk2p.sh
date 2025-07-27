@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4 # 8, 16
 #SBATCH --mem=40G               # memory per node (ex: 16G) you can get more 
-#SBATCH --time=1:00:00 		   # time period you need for your code (it is 12 hours for example)
+#SBATCH --time=10:00:00 		   # time period you need for your code (it is 12 hours for example)
 #SBATCH --mail-user=<jamal73sm@gmail.com> 	# replace with your email address to get emails to know when it is started or failed. 
 #SBATCH --mail-type=ALL
 
@@ -14,7 +14,7 @@
 
 #cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
 
-cd /project/def-arashmoh/shahab33/FeD2P/taming-transformers #Narval 
+cd /project/def-arashmoh/shahab33/FeD2P #Narval 
 
 
 module purge
@@ -28,4 +28,4 @@ module load cuda
 source /home/shahab33/fed2p/bin/activate #Narval
 
 #python main.py --alpha_dirichlet 100 --output_name "BN_"  	# this is the direction and the name of your code
-python VQGAN.py
+python openVocab.py
