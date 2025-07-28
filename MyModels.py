@@ -148,6 +148,8 @@ class VAEDecoder(nn.Module):
 import torch
 import torch.nn as nn
 import os
+import sys
+sys.path.append("~/taming-transformers/")
 from taming.models.vqgan import VQModel
 from omegaconf import OmegaConf
 
