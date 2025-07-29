@@ -43,7 +43,7 @@ class Server():
                 self.optimizer.zero_grad()
                 
                 logits = self.model() 
-                loss = self.loss_fn(logits, label)
+                loss = self.loss_fn(logits.long(), label.long())
                 
                 loss.backward()
                 self.optimizer.step()
