@@ -25,7 +25,7 @@ def get_args():
     parser.add_argument('--global_learning_rate', type=float, default=0.01)
     parser.add_argument('--global_batch_size', type=int, default=1)
     
-    parser.add_argument('--global_epochs', type=int, default=100)
+    parser.add_argument('--global_epochs', type=int, default=400)
     
     parser.add_argument('--default_temp', type=float, default=1)
     parser.add_argument('--alpha_dirichlet', type=float, default=100)
