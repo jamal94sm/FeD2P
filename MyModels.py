@@ -157,7 +157,7 @@ class VQGANDecoder(nn.Module):
     def __init__(self, config_path="taming-transformers/logs/vqgan_imagenet_f16_16384/configs/model.yaml", ckpt_path="taming-transformers/logs/vqgan_imagenet_f16_16384/checkpoints/last.ckpt", device=None):
         super(VQGANDecoder, self).__init__()
         os.environ["OPENBLAS_NUM_THREADS"] = "4"
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         # Load config and checkpoint
         config = OmegaConf.load(config_path)
@@ -166,7 +166,7 @@ class VQGANDecoder(nn.Module):
         # Initialize model
         self.model = VQModel(**params)
         with torch.serialization.safe_globals([]):  # or weights_only=False if trusted
-            state_dict = torch.load(ckpt_path, map_location=self.device, weights_only=False)
+            state_dict = torch.load(ckpt_path, map_location=self.device, weights_only=True)
         self.model.load_state_dict(state_dict["state_dict"], strict=False)
         self.model.eval().to(self.device)
 
