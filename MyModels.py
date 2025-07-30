@@ -166,7 +166,7 @@ class VQGANDecoder(nn.Module):
         # Initialize model
         self.model = VQModel(**params)
         with torch.serialization.safe_globals([]):  # or weights_only=False if trusted
-            state_dict = torch.load(ckpt_path, map_location=self.device, weights_only=True)
+            state_dict = torch.load(ckpt_path, map_location=self.device)
         self.model.load_state_dict(state_dict["state_dict"], strict=False)
         self.model.eval().to(self.device)
 
