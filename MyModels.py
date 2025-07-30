@@ -153,6 +153,11 @@ sys.path.append("~/taming-transformers/")
 from taming.models.vqgan import VQModel
 from omegaconf import OmegaConf
 
+from torch.serialization import add_safe_globals
+from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
+
+add_safe_globals([ModelCheckpoint])
+
 class VQGANDecoder(nn.Module):
     def __init__(self, config_path="taming-transformers/logs/vqgan_imagenet_f16_16384/configs/model.yaml", ckpt_path="taming-transformers/logs/vqgan_imagenet_f16_16384/checkpoints/last.ckpt", device=None):
         super(VQGANDecoder, self).__init__()
@@ -166,7 +171,7 @@ class VQGANDecoder(nn.Module):
         # Initialize model
         self.model = VQModel(**params)
         with torch.serialization.safe_globals([]):  # or weights_only=False if trusted
-            state_dict = torch.load(ckpt_path, map_location=self.device)
+            state_dict = torch.load(ckpt_path, map_location=self.device, weights_only=True)
         self.model.load_state_dict(state_dict["state_dict"], strict=False)
         self.model.eval().to(self.device)
 
