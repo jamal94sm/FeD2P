@@ -12,9 +12,9 @@
 
 #cd /home/shahab33/projects/def-arashmoh/shahab33/FeD2P #Cedar
 
-cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
+#cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
 
-#cd /project/def-arashmoh/shahab33/FeD2P #Narval 
+cd /project/def-arashmoh/shahab33/FeD2P #Narval 
 
 
 module purge
@@ -23,9 +23,9 @@ module load cuda
 
 #source /home/shahab33/FeDK2P/bin/activate  	# Cedar
 
-source /home/shahab33/fed2p/bin/activate #Graham
+#source /home/shahab33/fed2p/bin/activate #Graham
 
-#source /home/shahab33/fed2p/bin/activate #Narval
+source /home/shahab33/fed2p/bin/activate #Narval
 
 #python main.py --alpha_dirichlet 100 --output_name "BN_"  	# this is the direction and the name of your code
 python openVocab.py
