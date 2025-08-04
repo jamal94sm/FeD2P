@@ -17,7 +17,6 @@ import time
 import json
 import os
 import gc
-from sklearn.metrics import accuracy_score
 from Config import args 
 import time
 import psutil
@@ -32,16 +31,25 @@ import psutil
 
 
 def set_seed(seed=42):
+    os.environ['PYTHONHASHSEED'] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    transformers.set_seed(seed)
     tf.random.set_seed(seed)
+    transformers.set_seed(seed)
 
 
+def clean_memory(FM, processor, tokenizer):
+    # Free-up the memory 
+    del FM
+    del processor
+    del tokenizer
+    gc.collect()
+    torch.cuda.empty_cache()    
 
 
 
@@ -75,13 +83,14 @@ def main():
 
 
     # ===================== Zero-Shot Evaluation =====================
-    if "proto" in args.setup:
+    if "zero_shot" in args.setup: #proto
         best_logits = server.zero_shot(Dataset["train"], FM, processor, tokenizer, prototype=True)
         accuracy = MyUtils.Evaluate2(
             ground_truth = Dataset["train"]["label"],
             output_logits = MyUtils.extend_proto_outputs_to_labels(Dataset, best_logits)
         )
         print(f"Accuracy of the teacher model: {accuracy}%\n")
+        
     elif "bc" in args.setup:
         best_logits = [
             server.zero_shot(client.data["train"], FM, processor, tokenizer, prototype=False)
@@ -120,20 +129,24 @@ def main():
             client.cal_proto_logits()
         agg = server.aggregation()
         
+        
+        
+        
         if "ft" in args.setup:
             print("-" * 20, "Server Distillation Phase")
+            
             server.distill_generator(agg)
             general_knowledge = server.get_general_knowledge()
         
 
 
-        print("-" * 20, "Local Distillation Phase")
+        
         for client in clients:
             print(f"Distillation process of client {client.ID}:")
 
-            if "bc" in args.setup:
-                client.local_distillation(best_logits[client.ID], prototype=False)
-            elif "fl" in args.setup:
+            if "zero_shot" in args.setup:
+                client.local_distillation(best_logits[client.ID], prototype=True)
+            elif "FedMD" in args.setup:
                 client.local_distillation(agg, prototype=True)
             elif "ft" in args.setup:
                 client.local_distillation(general_knowledge, prototype=True)
@@ -147,11 +160,10 @@ def main():
 
 
 
-
+        
     # ===================== Save Results =====================
     avg_test_Acc = np.mean([client.test_Acc for client in clients], axis=0)
     MyUtils.save_as_json(avg_test_Acc, args, file_name= args.output_name + "accuracy_"+args.setup)
-
 
 
 
@@ -173,60 +185,47 @@ if __name__ == "__main__":
 
     # ===================== Dataset and Model Loading =====================
     Dataset, num_classes, name_classes = MyDatasets.load_data_from_Huggingface()
-    #FM, processor, tokenizer = MyModels.load_clip_model()
 
 
 
     # ===================== Data Distribution =====================
     distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes)
     print("\n ]data distribution of devices: \n", num_samples)
- 
+
 
 
     # ===================== Run for each configuration =====================
+    # ft: clip is fine-tuned --- mean: average of descriptions' embedding is used for refrence
+    # M: multiple descriptions --- sift: only true_labeled soft labels be shared with the server
     configurations = [
-        #{"setup": "ft_sift_M_mean_yn"},
-        #{"setup": "ft_M_mean_yn"},
-        #{"setup": "ft_yn"},
-        {"setup": "ft_BN_M_yn"},
+        {"setup": "local"},
+        {"setup": "FedMD"},
+        {"setup": "zero_shot"},
         {"setup": "ft_M_yn"},
+        #{"setup": "ft_BN_sift_M_mean_yn"},
+        #{"setup": "ft_M_yn"},
+        #{"setup": "ft_yn"},
     ]
 
     for config in configurations:
         args.setup = config["setup"]
+        
+        
             
         separator = "=" * 40
         print(f"\n{separator} Running configuration: {args.setup} {separator}")
-
+    
+        
         ### Load the CLIP model for each setup 
         FM, processor, tokenizer = MyModels.load_clip_model()
         
         main()
-
+        
+        clean_memory(FM, processor, tokenizer)
         print(f"{separator} Simulation is over for configuration {args.setup} {separator}\n")
 
-        # Free-up the memory 
-        del FM
-        del processor
-        del tokenizer
-        gc.collect()
-        torch.cuda.empty_cache()
-    
 
 
-
-
-
-
-
-    # ===================== Get virtual memory details===================== 
-    '''
-    mem = psutil.virtual_memory() 
-    print(f"Total Memory: {mem.total / (1024 ** 3):.2f} GB")
-    print(f"Available Memory: {mem.available / (1024 ** 3):.2f} GB")
-    print(f"Used Memory: {mem.used / (1024 ** 3):.2f} GB")
-    print(f"Memory Usage: {mem.percent}%")
-    '''
 
 
 
