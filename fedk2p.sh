@@ -27,5 +27,5 @@ module load cuda
 
 source /home/shahab33/fed2p/bin/activate #Narval
 
-python main1.py --alpha_dirichlet 100 --output_name "alpha100_"  	# this is the direction and the name of your code
+python main1.py --alpha_dirichlet 10 --output_name "alpha10_"  	# this is the direction and the name of your code
 #python openVocab.py
