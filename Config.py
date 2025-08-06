@@ -27,7 +27,7 @@ def get_args():
     parser.add_argument('--default_temp', type=float, default=1)
     parser.add_argument('--alpha_dirichlet', type=float, default=100)
     parser.add_argument('--load_saved_models', action='store_true')
-    parser.add_argument('--generator_name', type=str, default="VQGAN")
+    parser.add_argument('--generator_name', type=str, default="AttentionModel")
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--prompt_template', type=str, default = "This is a photo of a {}")
     parser.add_argument('--num_generated_images', type=int, default=64)
