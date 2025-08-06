@@ -67,6 +67,8 @@ class Prompt_Generator_plus_FM(torch.nn.Module):
             self.pgen = Prompt_Generator_MLP(input_size = self.FM.config.projection_dim, output_size = self.FM.vision_model.config.hidden_size).to(args.device)
         elif args.generator_name=="AttentionModel":
             self.pgen = Prompt_Generator_AttentionModel(512, 8, self.text_rep)
+        else:
+            raise ValueError(f"Unsupported generator name: {args.generator_name}")
 
             
             
