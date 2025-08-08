@@ -200,8 +200,8 @@ if __name__ == "__main__":
     # M: multiple descriptions --- sift: only true_labeled soft labels be shared with the server
     configurations = [
         {"setup": "local"},
-        #{"setup": "FedMD"},
-        #{"setup": "zero_shot"},
+        {"setup": "FedMD"},
+        {"setup": "zero_shot"},
         {"setup": "ft_M_yn"},
         #{"setup": "ft_BN_sift_M_mean_yn"},
         #{"setup": "ft_M_yn"},
