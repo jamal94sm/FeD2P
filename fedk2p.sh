@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4 # 8, 16
 #SBATCH --mem=40G               # memory per node (ex: 16G) you can get more 
-#SBATCH --time=10:00:00 		   # time period you need for your code (it is 12 hours for example)
+#SBATCH --time=21:00:00 		   # time period you need for your code (it is 12 hours for example)
 #SBATCH --mail-user=<jamal73sm@gmail.com> 	# replace with your email address to get emails to know when it is started or failed. 
 #SBATCH --mail-type=ALL
 
