@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4 # 8, 16
 #SBATCH --mem=40G               # memory per node (ex: 16G) you can get more 
-#SBATCH --time=21:00:00 		   # time period you need for your code (it is 12 hours for example)
+#SBATCH --time=20:00:00 		   # time period you need for your code (it is 12 hours for example)
 #SBATCH --mail-user=<jamal73sm@gmail.com> 	# replace with your email address to get emails to know when it is started or failed. 
 #SBATCH --mail-type=ALL
 
@@ -27,5 +27,5 @@ module load cuda
 
 source /home/shahab33/fed2p/bin/activate #Narval
 
-python main1.py --alpha_dirichlet 1 --output_name "r2_alpha1_"  	# this is the direction and the name of your code
+python main1.py --alpha_dirichlet 0.1 --output_name "r2_alpha0.1_"  	# this is the direction and the name of your code
 #python openVocab.py
