@@ -322,11 +322,9 @@ def play_alert_sound():
     else:  # Linux and others
         print('\a')  # ASCII Bell character
 ##############################################################################################################
-def save_as_json(to_save, config, file_name="", output_dir="results"):
-    
+def save_as_json(to_save, config, test_acc=None, file_name="", output_dir="results"):
     if isinstance(to_save, np.ndarray):
         to_save = to_save.tolist()
-
 
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, file_name + ".json")
@@ -337,14 +335,19 @@ def save_as_json(to_save, config, file_name="", output_dir="results"):
         for key, value in vars(config).items()
     }
 
-    # Add the object to save
+    # Add the main object to save
     config_dict["stored"] = to_save
+
+    # Add test accuracy if provided
+    if test_acc is not None:
+        config_dict["test_acc"] = float(test_acc)
 
     # Save to compact JSON
     with open(output_path, "w") as f:
         json.dump(config_dict, f, separators=(',', ':'))
 
     print(f"Data saved to {output_path}")
+
 
 ##############################################################################################################
 def Model_Size(model):
