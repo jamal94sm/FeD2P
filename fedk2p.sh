@@ -27,5 +27,5 @@ module load cuda
 
 source /home/shahab33/fed2p/bin/activate #Narval
 
-python main1.py --local_model_name "ResNet20" --num_train_samples 10000 --alpha_dirichlet 1 --output_name "ResNet20_10K_alpha1_"  	# this is the direction and the name of your code
+python main1.py --local_model_name "EfficientNet" --num_train_samples 10000 --alpha_dirichlet 1 --output_name "EfficientNet_10K_alpha1_"  	# this is the direction and the name of your code
 #python openVocab.py
