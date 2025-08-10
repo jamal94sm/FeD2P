@@ -113,7 +113,25 @@ class Server():
         return proto_logits
 
 
-
+    def just_training(self):
+        
+        data = MyDatasets.ddf({"train": {
+            "image": self.model.text_rep,
+            "label": self.model.labels,
+        }})
+        
+        loss, _, _ = MyUtils.Just_Train(
+            model = self.model,
+            data = data,
+            optimizer = self.optimizer,
+            scheduler = self.scheduler,
+            loss_fn = self.loss_fn,
+            batch_size = args.global_batch_size if "M" in args.setup else 8,
+            epochs = args.global_epochs,
+            device = args.device,
+            debug = args.debug
+        )
+        self.Loss += loss
 
 
     def zero_shot_orginal(self, data, FM, processor, tokenizer, prototype=False):
