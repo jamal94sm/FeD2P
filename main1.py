@@ -135,7 +135,10 @@ def main():
         if "ft" in args.setup:
             print("-" * 20, "Server Distillation Phase")
             
-            server.distill_generator(agg)
+            if "just_ft" in args.setup:
+                server.just_training()
+            else:
+                server.distill_generator(agg)
             general_knowledge = server.get_general_knowledge()
         
 
