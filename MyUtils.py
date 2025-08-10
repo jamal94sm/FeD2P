@@ -12,6 +12,50 @@ from torch.utils.data import DataLoader, TensorDataset
 
 
 ##############################################################################################################
+def Just_Train(model, data, optimizer, scheduler, loss_fn,  batch_size, epochs, device, debug):
+
+    dataset = torch.utils.data.DataLoader(
+        data["train"],
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=4,
+        pin_memory=True,
+        prefetch_factor=2,
+        persistent_workers=False
+    )
+
+
+    epoch_loss = []
+    epoch_acc = []
+    epoch_test_acc = []
+    for epoch in range(epochs):
+        model.train()
+        batch_loss = []
+        for batch in dataset:
+            optimizer.zero_grad()
+            pred = model( batch['image'].to(device) )
+            error = loss_fn(pred, batch["label"].to(device))
+            error.backward()
+            optimizer.step()
+            batch_loss.append(float(error))
+        scheduler.step()
+        epoch_loss.append(np.mean(batch_loss))
+
+    
+    # Clean up DataLoader to free memory
+    del dataset
+    gc.collect()
+    torch.cuda.empty_cache() # Only needed if you're using CUDA
+
+    
+    
+    return epoch_loss, epoch_acc, epoch_test_acc
+##############################################################################################################
+
+
+
+##############################################################################################################
 ##############################################################################################################
 def Evaluate(model, images, labels, device, batch_size=64):
     model.eval()
