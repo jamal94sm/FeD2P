@@ -309,7 +309,7 @@ def adjust_temperature_orginal(inputs, iteration, optimal_temperature, is_softma
         probabilities = torch.nn.functional.softmax(inputs / optimal_temperature, dim=1)
     return probabilities, optimal_temperature
 ############################################################################################################## 
-def plot(arrays, names=[""], title='Comparison of Arrays', xlabel='rounds', ylabel='accuracy %', file_name=args.output_name):
+def plot(arrays, names=[""], title=args.output_name, xlabel='rounds', ylabel='accuracy %', file_name=args.output_name):
     # Convert to numpy array with dtype=object to handle inhomogeneous sequences
     arrays = np.array(arrays, dtype=object)
 
