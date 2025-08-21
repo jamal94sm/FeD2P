@@ -4,6 +4,34 @@ import random
 import torch
 from Config import args
 
+import os
+import torch
+from PIL import Image
+from torchvision import transforms
+
+def build_image_dataset(folder_path):
+    transform = transforms.ToTensor()
+    images = []
+    labels = []
+
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".png") and filename.startswith("image_"):
+            parts = filename.split("_")
+            class_label = int(parts[-1].split(".")[0])  # Extract 'c' from 'class_c.png'
+
+            image_path = os.path.join(folder_path, filename)
+            image = Image.open(image_path).convert("RGB")
+            image_tensor = transform(image)
+
+            images.append(image_tensor)
+            labels.append(class_label)
+
+    # Stack image tensors and convert labels to tensor
+    image_tensor = torch.stack(images)
+    label_tensor = torch.tensor(labels)
+
+    return {"image": image_tensor, "label": label_tensor}
+
 ##############################################################################################################
 def ddf(x):
     x = datasets.Dataset.from_dict(x)
