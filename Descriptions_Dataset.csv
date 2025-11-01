@@ -1,0 +1,499 @@
+descriptions,label
+"""The airplane is captured mid-flight against a clear blue sky.""",0
+"""The wings extend gracefully from the fuselage.""",0
+"""The sunlight glints off the airplane’s metallic surface.""",0
+"""The engines are mounted securely beneath the wings.""",0
+"""The tail fin stands tall at the rear of the aircraft.""",0
+"""The airplane’s nose is pointed slightly upward.""",0
+"""The landing gear is fully retracted.""",0
+"""The airplane is flying above a layer of soft clouds.""",0
+"""The cockpit windows are dark and reflective.""",0
+"""The airplane’s body is sleek and streamlined.""",0
+"""The aircraft is painted in a modern color scheme.""",0
+"""The airplane appears to be cruising at high altitude.""",0
+"""The sky behind the airplane is cloudless and bright.""",0
+"""The airplane’s wings have a slight upward curve.""",0
+"""The jet engines show subtle signs of motion blur.""",0
+"""The airplane is flying over a vast landscape below.""",0
+"""The fuselage is long and cylindrical.""",0
+"""The airplane’s logo is visible on the tail.""",0
+"""The airplane is centered in the frame of the photo.""",0
+"""The aircraft is surrounded by a golden sunset glow.""",0
+"""The airplane’s lights are faintly visible on the wings.""",0
+"""The airplane is flying in a straight and level path.""",0
+"""The airplane’s shadow is cast on the clouds below.""",0
+"""The airplane is framed by a dramatic sky.""",0
+"""The airplane’s surface is smooth and polished.""",0
+"""The airplane is flying above a mountainous region.""",0
+"""The airplane is captured from a side angle.""",0
+"""The airplane is flying through a serene atmosphere.""",0
+"""The airplane’s wingspan dominates the composition.""",0
+"""The airplane is gliding effortlessly through the air.""",0
+"""The airplane is flying over a patchwork of fields.""",0
+"""The airplane’s engines are symmetrical and powerful.""",0
+"""The airplane is silhouetted against the setting sun.""",0
+"""The airplane is flying above a shimmering ocean.""",0
+"""The airplane’s flaps are in a neutral position.""",0
+"""The airplane is surrounded by a soft haze.""",0
+"""The airplane is flying over a snow-covered landscape.""",0
+"""The airplane is captured in crisp detail.""",0
+"""The airplane’s design is modern and aerodynamic.""",0
+"""The airplane is flying above a bustling cityscape.""",0
+"""The airplane is positioned slightly off-center in the photo.""",0
+"""The airplane’s wings are highlighted by the sunlight.""",0
+"""The airplane is flying through a partly cloudy sky.""",0
+"""The airplane’s tail section is clearly visible.""",0
+"""The airplane is flying over a dense forest.""",0
+"""The airplane is captured in a moment of stillness.""",0
+"""The airplane’s engines are emitting faint trails.""",0
+"""The airplane is flying toward the horizon.""",0
+"""The airplane is surrounded by a peaceful sky.""",0
+"""The airplane is the focal point of the photograph.""",0
+"""The automobile is parked on a quiet street.""",1
+"""The car’s glossy paint reflects the surrounding scenery.""",1
+"""The headlights are sleek and modern in design.""",1
+"""The wheels feature stylish alloy rims.""",1
+"""The car’s body has a smooth, aerodynamic shape.""",1
+"""The front grille is bold and prominent.""",1
+"""The windshield is clean and slightly tinted.""",1
+"""The side mirrors are folded in neatly.""",1
+"""The car is positioned at a slight angle in the photo.""",1
+"""The sunlight casts a soft glow on the car’s surface.""",1
+"""The car’s logo is clearly visible on the front.""",1
+"""The tires appear new and well-inflated.""",1
+"""The car is parked beside a row of trees.""",1
+"""The windows are rolled up and slightly reflective.""",1
+"""The car’s roofline slopes gently toward the rear.""",1
+"""The rear lights are sharp and angular.""",1
+"""The car is captured in a still moment.""",1
+"""The door handles are flush with the body.""",1
+"""The car’s shadow stretches across the pavement.""",1
+"""The license plate is centered on the bumper.""",1
+"""The car is surrounded by a calm urban setting.""",1
+"""The hood has a subtle curve and shine.""",1
+"""The car’s design is both elegant and sporty.""",1
+"""The side panels are free of any visible dents.""",1
+"""The car is parked near a sidewalk with fallen leaves.""",1
+"""The photo captures the car from a low angle.""",1
+"""The car’s interior is faintly visible through the windows.""",1
+"""The car is parked under a clear blue sky.""",1
+"""The rearview mirror reflects part of the background.""",1
+"""The car’s paint is a deep, rich color.""",1
+"""The vehicle is positioned in the center of the frame.""",1
+"""The car’s silhouette is crisp against the background.""",1
+"""The car is parked in front of a modern building.""",1
+"""The headlights are off, indicating the car is stationary.""",1
+"""The car’s chrome accents catch the light.""",1
+"""The vehicle’s stance is low and stable.""",1
+"""The car is parked on a cobblestone street.""",1
+"""The reflections on the car’s surface are sharp and vivid.""",1
+"""The car’s roof is equipped with a sunroof.""",1
+"""The photo captures the car in natural daylight.""",1
+"""The car’s design suggests a recent model year.""",1
+"""The vehicle is parked near a scenic overlook.""",1
+"""The car’s contours are highlighted by the lighting.""",1
+"""The car is parked beside a curb with grass nearby.""",1
+"""The photo shows the car from a three-quarter view.""",1
+"""The car’s rear spoiler adds a sporty touch.""",1
+"""The vehicle is clean and well-maintained.""",1
+"""The car’s side profile is sleek and uninterrupted.""",1
+"""The car is parked in a quiet residential area.""",1
+"""The background complements the car’s color and style.""",1
+"""The bird is perched gracefully on a slender branch.""",2
+"""The feathers shimmer with iridescent colors in the light.""",2
+"""The bird’s beak is sharp and slightly curved.""",2
+"""The wings are folded neatly against its body.""",2
+"""The bird’s eyes are alert and focused.""",2
+"""The tail feathers fan out slightly behind it.""",2
+"""The bird is surrounded by lush green foliage.""",2
+"""The sunlight highlights the texture of its plumage.""",2
+"""The bird’s claws grip the branch firmly.""",2
+"""The background is softly blurred, drawing attention to the bird.""",2
+"""The bird’s head is tilted slightly to one side.""",2
+"""The feathers appear soft and well-groomed.""",2
+"""The bird is captured in a moment of stillness.""",2
+"""The bird’s chest is puffed out slightly.""",2
+"""The photo captures the bird from a side profile.""",2
+"""The bird’s markings are intricate and detailed.""",2
+"""The bird is framed by a canopy of leaves.""",2
+"""The beak is a contrasting color to the feathers.""",2
+"""The bird’s posture is upright and elegant.""",2
+"""The photo is taken in natural daylight.""",2
+"""The bird’s wings show subtle hints of motion.""",2
+"""The bird is perched near a cluster of berries.""",2
+"""The feathers transition smoothly between colors.""",2
+"""The bird’s gaze is directed toward the camera.""",2
+"""The bird is positioned slightly off-center in the frame.""",2
+"""The photo captures the bird in its natural habitat.""",2
+"""The bird’s silhouette stands out against the sky.""",2
+"""The bird is surrounded by a peaceful forest scene.""",2
+"""The bird’s feathers are ruffled slightly by the breeze.""",2
+"""The bird is perched on a moss-covered branch.""",2
+"""The bird’s eye reflects a glint of light.""",2
+"""The bird’s legs are thin but strong.""",2
+"""The bird is captured mid-song with its beak open.""",2
+"""The bird’s wings are partially extended.""",2
+"""The bird is perched above a calm body of water.""",2
+"""The bird’s colors blend beautifully with the background.""",2
+"""The bird is resting in a patch of sunlight.""",2
+"""The bird’s feathers have a velvety appearance.""",2
+"""The bird is surrounded by delicate blossoms.""",2
+"""The bird’s beak is slightly open as if calling.""",2
+"""The bird is perched high in the treetops.""",2
+"""The bird’s form is sharply in focus.""",2
+"""The bird is nestled among the branches.""",2
+"""The bird’s feathers are layered in fine detail.""",2
+"""The bird is captured in a moment of quiet observation.""",2
+"""The bird’s wings are tucked close to its body.""",2
+"""The bird is perched on a fence post in a rural setting.""",2
+"""The bird’s vibrant colors contrast with the muted background.""",2
+"""The bird is resting on a rock near a stream.""",2
+"""The bird’s presence adds life to the tranquil scene.""",2
+"""The cat is lounging comfortably on a windowsill.""",3
+"""The fur looks soft and well-groomed.""",3
+"""The cat’s eyes are wide and curious.""",3
+"""The whiskers fan out from its cheeks.""",3
+"""The cat is curled up in a cozy position.""",3
+"""The sunlight highlights the cat’s fur.""",3
+"""The cat’s ears are perked up attentively.""",3
+"""The tail is wrapped neatly around its body.""",3
+"""The cat is gazing out the window.""",3
+"""The paws are tucked gently beneath its body.""",3
+"""The cat’s coat has a beautiful pattern of stripes.""",3
+"""The background is softly blurred, drawing focus to the cat.""",3
+"""The cat’s nose is small and pink.""",3
+"""The cat is resting on a plush blanket.""",3
+"""The photo captures the cat from a side angle.""",3
+"""The cat’s eyes reflect the light softly.""",3
+"""The cat is lying on a wooden floor.""",3
+"""The fur color blends well with the surroundings.""",3
+"""The cat’s expression is calm and relaxed.""",3
+"""The cat is sitting upright with perfect posture.""",3
+"""The cat’s claws are retracted and hidden.""",3
+"""The cat is nestled in a sunbeam.""",3
+"""The cat’s tail flicks slightly in motion.""",3
+"""The cat is resting beside a potted plant.""",3
+"""The cat’s ears are slightly tilted back.""",3
+"""The cat is captured mid-yawn.""",3
+"""The cat’s fur has a mix of warm tones.""",3
+"""The cat is lying on a patterned rug.”",3
+"""The cat’s gaze is fixed on something unseen.""",3
+"""The cat is perched on the arm of a sofa.""",3
+"""The cat’s body is stretched out in full relaxation.""",3
+"""The cat’s eyes are half-closed in contentment.""",3
+"""The cat is resting in a cardboard box.""",3
+"""The cat’s fur looks fluffy and thick.""",3
+"""The cat is lying on its back with paws in the air.""",3
+"""The cat’s collar is visible around its neck.""",3
+"""The cat is sitting in a patch of sunlight.""",3
+"""The cat’s face is framed by long whiskers.""",3
+"""The cat is resting near a window with sheer curtains.""",3
+"""The cat’s fur has a glossy sheen.""",3
+"""The cat is lying beside a stack of books.""",3
+"""The cat’s ears are sharply pointed.""",3
+"""The cat is nestled in a cozy corner.""",3
+"""The cat’s eyes are a striking shade of green.""",3
+"""The cat is resting on a soft cushion.""",3
+"""The cat’s fur pattern is unique and detailed.""",3
+"""The cat is lying peacefully with its eyes closed.""",3
+"""The cat’s body is partially hidden in shadow.""",3
+"""The cat is perched on a windowsill overlooking a garden.""",3
+"""The cat’s expression is one of quiet curiosity.""",3
+"""The deer is standing quietly in a forest clearing.""",4
+"""The sunlight filters through the trees onto its back.""",4
+"""The deer’s antlers are tall and symmetrical.""",4
+"""The fur is a soft brown with lighter patches.""",4
+"""The deer’s ears are perked up attentively.""",4
+"""The eyes are wide and alert.""",4
+"""The deer is partially hidden among the foliage.""",4
+"""The legs are slender and graceful.""",4
+"""The deer’s nose is slightly moist and black.""",4
+"""The tail is short and flicked upward.""",4
+"""The deer is captured mid-step on a forest path.""",4
+"""The background is filled with tall trees and shadows.""",4
+"""The deer’s body is angled slightly away from the camera.""",4
+"""The fur looks thick and well-insulated.""",4
+"""The deer is surrounded by fallen leaves.""",4
+"""The antlers catch the light from above.""",4
+"""The deer’s gaze is directed toward the viewer.""",4
+"""The photo captures the deer in a moment of stillness.""",4
+"""The deer’s hooves are partially buried in the grass.""",4
+"""The deer is framed by branches and underbrush.""",4
+"""The animal’s posture is calm but cautious.""",4
+"""The deer is standing near a small stream.""",4
+"""The photo is taken in soft, natural light.""",4
+"""The deer’s breath is faintly visible in the cool air.""",4
+"""The deer is positioned slightly off-center in the frame.""",4
+"""The fur has a subtle sheen in the sunlight.""",4
+"""The deer’s silhouette is outlined against the trees.""",4
+"""The deer is standing near a moss-covered log.""",4
+"""The photo captures the texture of the deer’s coat.""",4
+"""The deer’s antlers are covered in velvet.""",4
+"""The deer is surrounded by a peaceful woodland scene.""",4
+"""The deer’s body is partially turned toward the camera.""",4
+"""The deer is standing in a patch of tall grass.""",4
+"""The background is softly blurred to highlight the deer.""",4
+"""The deer’s ears are turned toward a distant sound.""",4
+"""The deer is captured in a natural, undisturbed moment.""",4
+"""The deer’s legs are long and slender.""",4
+"""The deer is standing beneath a canopy of leaves.""",4
+"""The deer’s fur blends well with the forest floor.""",4
+"""The deer is looking off into the distance.""",4
+"""The deer’s antlers are large and branching.""",4
+"""The deer is standing near a cluster of wildflowers.""",4
+"""The deer’s expression is gentle and serene.""",4
+"""The deer is captured in a quiet, early morning light.""",4
+"""The deer’s body is partially in shadow.""",4
+"""The deer is standing beside a tree trunk.""",4
+"""The deer’s coat has a warm, earthy tone.""",4
+"""The deer is alert but not alarmed.""",4
+"""The deer is standing in a clearing surrounded by trees.""",4
+"""The deer’s presence adds life to the tranquil forest scene.""",4
+"""The dog is sitting calmly on a grassy lawn.""",5
+"""The fur looks soft and slightly tousled.""",5
+"""The dog’s eyes are bright and expressive.""",5
+"""The ears are perked up with curiosity.""",5
+"""The dog’s tongue is hanging out in a relaxed pant.""",5
+"""The sunlight highlights the texture of its coat.""",5
+"""The dog is gazing directly at the camera.""",5
+"""The tail is wagging in a blur of motion.""",5
+"""The dog is lying down with its front paws stretched out.""",5
+"""The background shows a peaceful outdoor setting.""",5
+"""The dog’s nose is shiny and black.""",5
+"""The fur color is a mix of browns and whites.""",5
+"""The dog is wearing a colorful collar.""",5
+"""The photo captures the dog mid-run with ears flapping.""",5
+"""The dog’s expression is joyful and playful.""",5
+"""The paws are large and slightly muddy.""",5
+"""The dog is resting on a cozy blanket.""",5
+"""The fur around the neck is thick and fluffy.""",5
+"""The dog is captured in a moment of stillness.""",5
+"""The dog’s body is angled slightly to the side.""",5
+"""The dog is sitting in a patch of sunlight.""",5
+"""The eyes reflect the light with a gentle sparkle.""",5
+"""The dog is surrounded by fallen autumn leaves.""",5
+"""The dog’s coat is well-groomed and shiny.""",5
+"""The dog is standing alert with its head tilted.""",5
+"""The background is softly blurred to emphasize the dog.""",5
+"""The dog’s ears are floppy and hang to the sides.""",5
+"""The dog is lying on a wooden deck.""",5
+"""The dog’s mouth is open in a happy grin.""",5
+"""The fur has a rich, golden hue.""",5
+"""The dog is captured mid-leap in a playful pose.""",5
+"""The dog is resting its head on its paws.""",5
+"""The dog is sitting beside a pair of boots.""",5
+"""The dog’s tail curls slightly at the tip.""",5
+"""The dog is framed by a garden of flowers.""",5
+"""The dog’s coat has a mix of short and long fur.""",5
+"""The dog is lying in the shade of a tree.""",5
+"""The dog’s eyes are a deep, soulful brown.""",5
+"""The dog is captured in a candid, natural moment.""",5
+"""The dog is sitting on a stone path.""",5
+"""The dog’s fur is ruffled by a gentle breeze.""",5
+"""The dog is resting beside a bowl of water.""",5
+"""The dog’s expression is calm and content.""",5
+"""The dog is standing on a sandy beach.""",5
+"""The dog’s collar has a small tag attached.""",5
+"""The dog is lying on its side in the grass.""",5
+"""The dog’s ears are lifted by the wind.""",5
+"""The dog is sitting in front of a rustic fence.""",5
+"""The dog’s coat is speckled with different shades.""",5
+"""The dog is the clear focus of the photograph.""",5
+"""The frog is perched on a damp green leaf.""",6
+"""The skin appears moist and slightly bumpy.""",6
+"""The frog’s eyes are large and golden with horizontal pupils.""",6
+"""The legs are tucked neatly beneath its body.""",6
+"""The frog’s toes are spread out with tiny suction pads.""",6
+"""The frog is surrounded by lush vegetation.""",6
+"""The photo captures the frog in sharp detail.""",6
+"""The frog’s skin has a mottled pattern of greens and browns.""",6
+"""The frog is sitting still, blending into its surroundings.""",6
+"""The background is softly blurred to highlight the frog.""",6
+"""The frog’s throat is slightly puffed out.""",6
+"""The frog is resting near the edge of a small pond.""",6
+"""The frog’s posture is alert and upright.""",6
+"""The frog’s body is compact and well-balanced.""",6
+"""The frog is partially hidden among the leaves.""",6
+"""The frog’s skin glistens under the natural light.""",6
+"""The frog is captured mid-croak with its mouth open.""",6
+"""The frog’s limbs are long and slender.""",6
+"""The frog is sitting on a moss-covered rock.""",6
+"""The frog’s eyes reflect the light with a glassy sheen.""",6
+"""The frog is positioned slightly off-center in the frame.""",6
+"""The frog’s coloration helps it camouflage in the foliage.""",6
+"""The frog is resting in a shallow puddle.""",6
+"""The frog’s back is covered in tiny speckles.""",6
+"""The frog is surrounded by dewdrops on the leaves.""",6
+"""The frog’s front legs are bent and ready to leap.""",6
+"""The frog is captured in a moment of stillness.""",6
+"""The frog’s skin has a smooth, rubbery texture.""",6
+"""The frog is sitting beneath a canopy of ferns.""",6
+"""The frog’s nostrils are visible just above its mouth.""",6
+"""The frog is perched on a log near the water’s edge.""",6
+"""The frog’s body is angled slightly toward the camera.""",6
+"""The frog is resting in a patch of sunlight.""",6
+"""The frog’s toes are splayed out for balance.""",6
+"""The frog is surrounded by a rich, green environment.""",6
+"""The frog’s throat is inflated like a balloon.""",6
+"""The frog is captured just before a leap.""",6
+"""The frog’s skin shows subtle shades of yellow and olive.""",6
+"""The frog is nestled in a bed of wet leaves.""",6
+"""The frog’s gaze is fixed on something in the distance.""",6
+"""The frog is sitting on a lily pad floating in water.""",6
+"""The frog’s limbs are folded close to its body.""",6
+"""The frog is framed by tall blades of grass.""",6
+"""The frog’s reflection is visible in the water below.""",6
+"""The frog is resting quietly in the underbrush.""",6
+"""The frog’s eyes are wide and observant.""",6
+"""The frog is perched on a stone near a stream.""",6
+"""The frog’s skin appears slightly translucent in the light.""",6
+"""The frog is the central focus of the photograph.""",6
+"""The horse is standing tall in an open field.""",7
+"""The mane flows gently in the breeze.""",7
+"""The horse’s coat shines under the sunlight.""",7
+"""The eyes are calm and observant.""",7
+"""The horse’s ears are pointed forward attentively.""",7
+"""The tail sways softly behind its hind legs.""",7
+"""The horse is captured mid-stride with one hoof raised.""",7
+"""The background features rolling hills and blue sky.""",7
+"""The horse’s muscles are visible beneath its sleek coat.""",7
+"""The nostrils are slightly flared as it breathes.""",7
+"""The horse is wearing a simple leather bridle.""",7
+"""The hooves are firmly planted on the grassy ground.""",7
+"""The horse’s mane is long and slightly tousled.""",7
+"""The photo captures the horse from a side profile.""",7
+"""The horse’s posture is strong and elegant.""",7
+"""The coat is a rich chestnut color with a white blaze.""",7
+"""The horse is grazing peacefully in a meadow.""",7
+"""The sunlight casts a warm glow on its back.""",7
+"""The horse’s tail is thick and flowing.""",7
+"""The horse is standing near a wooden fence.""",7
+"""The photo is taken in soft, natural light.""",7
+"""The horse’s head is turned slightly toward the camera.""",7
+"""The mane is braided neatly along the neck.""",7
+"""The horse is captured mid-gallop across the field.""",7
+"""The horse’s ears twitch at a distant sound.""",7
+"""The horse is standing beside a calm stream.""",7
+"""The coat has subtle dapples along the flank.""",7
+"""The horse’s eyes reflect the surrounding landscape.""",7
+"""The horse is resting with one leg slightly bent.""",7
+"""The background is softly blurred to emphasize the horse.""",7
+"""The horse’s body is angled slightly away from the viewer.""",7
+"""The horse is wearing a saddle and reins.""",7
+"""The horse’s breath is visible in the cool air.""",7
+"""The horse is standing in a patch of wildflowers.""",7
+"""The mane catches the light with golden highlights.""",7
+"""The horse is framed by tall grass and trees.""",7
+"""The horse’s hooves are partially covered in dust.""",7
+"""The horse is captured in a moment of stillness.""",7
+"""The horse’s coat is smooth and well-groomed.""",7
+"""The horse is standing beneath a wide, open sky.""",7
+"""The horse’s tail flicks gently to one side.""",7
+"""The horse is looking off into the distance.""",7
+"""The horse’s legs are long and powerful.""",7
+"""The horse is standing near a rustic barn.""",7
+"""The horse’s mane is windswept and free.""",7
+"""The horse is captured in a natural, relaxed pose.""",7
+"""The horse’s coat glistens with a healthy sheen.""",7
+"""The horse is standing in a sunlit pasture.""",7
+"""The horse’s expression is calm and noble.""",7
+"""The horse is the central focus of the photograph.""",7
+"""The ship is anchored calmly in the harbor.""",8
+"""The hull is painted a deep navy blue.""",8
+"""The ship’s reflection shimmers on the water’s surface.""",8
+"""The masts rise tall against the sky.""",8
+"""The ship’s deck is lined with ropes and equipment.""",8
+"""The bow cuts sharply through the gentle waves.""",8
+"""The ship is surrounded by a calm sea and open sky.""",8
+"""The sails are furled neatly along the booms.""",8
+"""The ship’s name is painted clearly on the stern.""",8
+"""The photo captures the ship from a side angle.""",8
+"""The ship’s anchor hangs just above the water.""",8
+"""The ship is docked beside a wooden pier.""",8
+"""The sunlight glints off the metal railings.""",8
+"""The ship’s smokestack emits a faint plume.""",8
+"""The ship’s hull shows signs of weathering.""",8
+"""The ship is framed by a backdrop of distant mountains.""",8
+"""The deck is bustling with small details and textures.""",8
+"""The ship’s flag flutters in the breeze.""",8
+"""The ship is positioned slightly off-center in the frame.""",8
+"""The water around the ship is calm and glassy.""",8
+"""The ship’s bridge is visible above the main deck.""",8
+"""The ship is captured in a moment of stillness.""",8
+"""The ship’s lifeboats are secured along the sides.""",8
+"""The ship’s rigging forms a web of lines above the deck.""",8
+"""The ship is bathed in golden evening light.""",8
+"""The ship’s hull curves smoothly toward the bow.""",8
+"""The ship is sailing slowly across the open sea.""",8
+"""The ship’s wake trails gently behind it.""",8
+"""The ship is silhouetted against a setting sun.""",8
+"""The ship’s radar and antennas are mounted high.""",8
+"""The ship is surrounded by a misty horizon.""",8
+"""The ship’s deck is lined with containers and cargo.""",8
+"""The ship is moored beside a bustling port.""",8
+"""The ship’s windows reflect the surrounding sky.""",8
+"""The ship is painted with bold, contrasting colors.""",8
+"""The ship’s ropes are coiled neatly on the deck.""",8
+"""The ship is navigating through icy waters.""",8
+"""The ship’s lights are glowing softly in the dusk.""",8
+"""The ship is dwarfed by towering cliffs nearby.""",8
+"""The ship’s hull is mirrored in the still water.""",8
+"""The ship is captured mid-journey across the ocean.""",8
+"""The ship’s structure is massive and imposing.""",8
+"""The ship is surrounded by seagulls in flight.""",8
+"""The ship’s deck is wet from ocean spray.""",8
+"""The ship is passing beneath a suspension bridge.""",8
+"""The ship’s silhouette is crisp against the sky.""",8
+"""The ship is docked near a lighthouse.""",8
+"""The ship’s propellers churn the water below.""",8
+"""The ship is the central focus of the photograph.""",8
+"""The truck is parked on a dusty roadside.""",9
+"""The body of the truck is painted a bold red.""",9
+"""The headlights are large and slightly reflective.""",9
+"""The truck’s grille is wide and chrome-plated.""",9
+"""The tires are thick and rugged, built for heavy loads.""",9
+"""The truck is captured from a low angle, emphasizing its size.""",9
+"""The cab windows are tinted and slightly rolled down.""",9
+"""The truck’s bed is empty and clean.""",9
+"""The sunlight casts shadows beneath the chassis.""",9
+"""The truck’s mirrors extend outward from the doors.""",9
+"""The truck is positioned diagonally in the frame.""",9
+"""The background shows a stretch of open highway.""",9
+"""The truck’s logo is clearly visible on the front grille.""",9
+"""The truck’s exhaust pipe is visible near the rear wheel.""",9
+"""The truck is parked beside a row of trees.""",9
+"""The paint has a glossy finish that reflects the sky.""",9
+"""The truck’s tailgate is closed and secured.""",9
+"""The truck’s body is lifted high above the ground.""",9
+"""The truck is surrounded by gravel and dry grass.""",9
+"""The truck’s shadow stretches across the pavement.""",9
+"""The truck’s hood is slightly raised in the center.""",9
+"""The truck is captured in bright, natural daylight.""",9
+"""The truck’s tires are caked with a bit of mud.""",9
+"""The truck’s side panels are smooth and dent-free.""",9
+"""The truck is parked near a construction site.""",9
+"""The truck’s headlights are off, indicating it’s stationary.""",9
+"""The truck’s bed liner is textured and durable.""",9
+"""The truck’s front bumper is reinforced with metal.""",9
+"""The truck is framed by a wide, open sky.""",9
+"""The truck’s cab is spacious and elevated.""",9
+"""The truck’s rear lights are clean and intact.""",9
+"""The truck is parked beside a weathered fence.""",9
+"""The truck’s antenna extends from the roof.""",9
+"""The truck’s side steps are visible below the doors.""",9
+"""The truck is captured in a moment of stillness.""",9
+"""The truck’s wheels are turned slightly to the left.""",9
+"""The truck is parked in front of a rustic barn.""",9
+"""The truck’s windshield is spotless and clear.""",9
+"""The truck’s bed has tie-down hooks along the sides.""",9
+"""The truck is parked on a slight incline.""",9
+"""The truck’s chrome accents catch the sunlight.""",9
+"""The truck’s suspension appears heavy-duty.""",9
+"""The truck is parked near a stack of wooden pallets.""",9
+"""The truck’s cab interior is faintly visible through the glass.""",9
+"""The truck’s license plate is mounted on the front bumper.""",9
+"""The truck is surrounded by a rural landscape.""",9
+"""The truck’s frame is sturdy and well-built.""",9
+"""The truck is parked under a partly cloudy sky.""",9
+"""The truck’s design is modern and functional.""",9
+"""The truck is the central focus of the photograph.""",9
