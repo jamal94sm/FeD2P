@@ -9,8 +9,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 
 
-from Config import get_args
-args = get_args()
+from Config import args
 
 import MyUtils
 import MyDatasets
