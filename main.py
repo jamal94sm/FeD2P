@@ -16,7 +16,7 @@ import time
 import json
 import os
 import gc
-from Config import get_arguments 
+from Config import args 
 import time
 import psutil
 
@@ -358,7 +358,7 @@ dataset_loaders = {
 
 
 if __name__ == "__main__":
-    args = get_arguments()
+    args = args()
     set_seed(42)
     
     loader = dataset_loaders.get(args.dataset.lower())
