@@ -7,10 +7,13 @@ import matplotlib.pyplot as plt
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
+
+from Config import args 
 import MyUtils
 import MyDatasets
 import MyModels
 import MyPlayers
+
 import torchvision
 import time
 import json
