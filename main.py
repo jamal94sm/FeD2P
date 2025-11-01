@@ -358,7 +358,6 @@ dataset_loaders = {
 
 
 if __name__ == "__main__":
-    args = args()
     set_seed(42)
     
     loader = dataset_loaders.get(args.dataset.lower())
