@@ -297,3 +297,272 @@ def model_size(model): # returns if Giga Bytes
 ##############################################################################################################     
 ##############################################################################################################
 
+##############################################################################################################
+def extend_proto_outputs_to_labels(input_data, proto_outputs):
+    num_data = input_data["train"]["image"].shape[0]
+    num_classes = len(  sorted(set(input_data["train"]["label"].tolist()))  )
+    labels = input_data["train"]["label"]
+    extended_outputs = torch.zeros(num_data, num_classes)
+    for i in range(num_data):
+        extended_outputs[i] = proto_outputs[labels[i].item()]
+    return extended_outputs
+
+
+##############################################################################################################
+def FSL_data_preparing(samples, labels, num_shots): #Few-Shot Learning data preparing
+    labels = labels.detach().numpy()
+    samples = samples.detach().numpy()
+    classes = list(set(labels))
+    new_samples = []
+    new_labels = []
+    for cls in classes :
+        ins = np.where(np.array(labels)==cls)[0]
+        ins = ins[ : min(num_shots, len(ins))]
+        for i in ins:
+            new_samples.append(samples[i])
+            new_labels.append(cls)
+    return  torch.tensor(new_samples),  torch.tensor(new_labels)
+##############################################################################################################
+def plot(arrays, names=[""], title=args.output_name, xlabel='rounds', ylabel='accuracy %', file_name="figure"+args.output_name):
+    # Convert to numpy array with dtype=object to handle inhomogeneous sequences
+    arrays = np.array(arrays, dtype=object)
+
+    # Ensure names list matches the number of arrays
+    if len(arrays) != len(names):
+        names += [""] * abs(len(arrays) - len(names))
+
+    # Create plots directory if it doesn't exist
+    os.makedirs("plots", exist_ok=True)
+
+    plt.figure()
+    for arr, name in zip(arrays, names):
+        arr = np.array(arr)  # Convert each individual array to numpy array
+        plt.plot(arr, label=name)
+
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(f"plots/{file_name}.png")
+    plt.show()
+##############################################################################################################
+def check_if_softmax(x):
+    # Check if the input is softmax probabilities
+    device = x.device
+    if torch.all((x >= 0) & (x <= 1)) and torch.allclose(x.sum(dim=1), torch.ones(x.size(0), device=device), atol=1e-6):
+        return True
+    else:  
+        return False
+##############################################################################################################
+def Distil(model, extended_data, data, optimizer, scheduler, loss_fn, batch_size, epochs, device, debug):
+    
+    dataset = torch.utils.data.DataLoader(
+        extended_data,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=4,              # Enables multi-processing
+        pin_memory=True,            # Speeds up host-to-GPU transfer
+        prefetch_factor=2,          # Controls preloading per worker
+        persistent_workers=False    # Keeps workers alive between epochs
+    )
+
+    #dataset = torch.utils.data.DataLoader(extended_data, batch_size=batch_size, shuffle=True, drop_last=True)
+    epoch_loss = []
+    epoch_acc = []
+    epoch_test_acc = []
+    optimal_temp_teacher = 1
+    optimal_temp_student = 1
+    softness = check_if_softmax(extended_data["teacher_knowledge"][0:10])
+
+    for epoch in range(epochs):
+        batch_loss = []
+        model.train()
+        for batch in dataset:
+            optimizer.zero_grad()
+            pred = model(batch['student_model_input'].to(device))
+            error1 = torch.nn.functional.cross_entropy(pred, batch["student_model_output"].to(device))
+
+            if args.setup == "local":
+                error2 = 0
+
+            Sta = True if args.setup[-2] == "y" else False
+            Tta = True if args.setup[-1] == "y" else False
+
+            # if data == None:
+            #     Sta = True
+            #     Tta = False #KD
+
+            if Sta:
+                s, optimal_temp_student = adjust_temperature(pred, epoch, optimal_temp_student, is_softmax=False)
+            else:
+                s = torch.nn.functional.log_softmax(pred / args.default_temp, dim=-1)
+
+            if Tta:
+                t, optimal_temp_teacher = adjust_temperature(
+                    batch["teacher_knowledge"].to(device),
+                    epoch,
+                    optimal_temp_teacher,
+                    is_softmax=softness,
+                )
+            else:
+                t = torch.nn.functional.softmax(batch["teacher_knowledge"].to(device) / args.default_temp, dim=-1)
+
+            if Tta and Sta:
+                error2 = (((optimal_temp_student + optimal_temp_teacher) / 2) ** 2) * torch.nn.KLDivLoss(
+                    reduction='batchmean')(s.log(), t)
+            elif not (Tta and Sta):
+                error2 = (args.default_temp ** 2) * torch.nn.KLDivLoss(reduction="batchmean")(s, t)
+            elif Tta and not Sta:
+                error2 = (optimal_temp_teacher ** 2) * torch.nn.KLDivLoss(reduction='batchmean')(s.log(), t)
+            elif not Tta and Sta:
+                error2 = (optimal_temp_student ** 2) * torch.nn.KLDivLoss(reduction='batchmean')(s.log(), t)
+
+            error = error1 + error2
+            error.backward()
+            optimizer.step()
+            batch_loss.append(float(error))
+
+        scheduler.step()
+        epoch_loss.append(np.mean(batch_loss))
+
+        if data:
+            epoch_acc.append(Evaluate(model, data["train"]["image"], data["train"]["label"], device)[0])
+            epoch_test_acc.append(Evaluate(model, data["test"]["image"], data["test"]["label"], device)[0])
+            if debug:
+                print("Epoch {}/{} ===> Loss: {:.2f}, Train accuracy: {:.2f}, Test accuracy: {:.2f}".format(
+                    epoch, epochs, epoch_loss[-1], epoch_acc[-1], epoch_test_acc[-1]))
+        else:
+            if debug:
+                print("Epoch {}/{} ===> Loss: {:.2f}".format(epoch, epochs, epoch_loss[-1]))
+
+    # Clean up DataLoader to free memory
+    del dataset
+    gc.collect()
+    torch.cuda.empty_cache() # Only needed if you're using CUDA
+
+    
+
+    return epoch_loss, epoch_acc, epoch_test_acc
+
+##############################################################################################################
+##############################################################################################################
+def Evaluate(model, images, labels, device, batch_size=64):
+    model.eval()
+    correct = 0
+    all_preds = []
+
+    dataset = TensorDataset(images, labels)
+    loader = DataLoader(dataset, batch_size=batch_size)
+
+    with torch.no_grad():
+        for batch_images, batch_labels in loader:
+            batch_images = batch_images.to(device)
+            batch_labels = batch_labels.to(device)
+            pred = model(batch_images)
+            predicted_classes = torch.argmax(pred, dim=1)
+            correct += (predicted_classes == batch_labels).sum().item()
+            all_preds.append(pred.cpu())
+
+    accuracy = 100.0 * correct / len(labels)
+    return accuracy, torch.cat(all_preds, dim=0)
+
+##############################################################################################################
+def Evaluate2(ground_truth, output_logits):
+    with torch.no_grad():
+        predicted_classes = torch.argmax(output_logits, dim=1)
+        accuracy = accuracy_score(
+            ground_truth.cpu().numpy(),
+            predicted_classes.cpu().numpy()
+        )
+    return accuracy
+##############################################################################################################
+def Train(model, data, optimizer, scheduler, loss_fn,  batch_size, epochs, device, debug, eval):
+
+    dataset = torch.utils.data.DataLoader(
+        data["train"],
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=4,
+        pin_memory=True,
+        prefetch_factor=2,
+        persistent_workers=False
+    )
+
+
+    epoch_loss = []
+    epoch_acc = []
+    epoch_test_acc = []
+    for epoch in range(epochs):
+        model.train()
+        batch_loss = []
+        for batch in dataset:
+            optimizer.zero_grad()
+            pred = model( batch['image'].to(device) )
+            error = loss_fn(pred, batch["label"].to(device))
+            error.backward()
+            optimizer.step()
+            batch_loss.append(float(error))
+        scheduler.step()
+        epoch_loss.append(np.mean(batch_loss))
+        epoch_acc.append( Evaluate(model,  data["train"]["image"], data["train"]["label"], device)[0] )
+
+        if data['test'] is not None and eval is True:
+            epoch_test_acc.append( Evaluate(model,  data["test"]["image"], data["test"]["label"], device)[0] )
+        
+        if debug: print("Epoch {}/{} ===> Loss: {:.2f}, Train accuracy: {:.2f}, Test accuracy: {:.2f}".format(epoch, epochs, epoch_loss[-1], epoch_acc[-1], epoch_test_acc[-1]))
+    
+
+    
+    # Clean up DataLoader to free memory
+    del dataset
+    gc.collect()
+    torch.cuda.empty_cache() # Only needed if you're using CUDA
+
+    
+    
+    return epoch_loss, epoch_acc, epoch_test_acc
+##############################################################################################################
+def Just_Train(model, data, optimizer, scheduler, loss_fn,  batch_size, epochs, device, debug):
+
+    dataset = torch.utils.data.DataLoader(
+        data["train"],
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=4,
+        pin_memory=True,
+        prefetch_factor=2,
+        persistent_workers=False
+    )
+
+
+    epoch_loss = []
+    epoch_acc = []
+    epoch_test_acc = []
+    for epoch in range(epochs):
+        model.train()
+        batch_loss = []
+        for batch in dataset:
+            optimizer.zero_grad()
+            pred = model( batch['image'].to(device) )
+            error = loss_fn(pred, batch["label"].to(device))
+            error.backward()
+            optimizer.step()
+            batch_loss.append(float(error))
+        scheduler.step()
+        epoch_loss.append(np.mean(batch_loss))
+
+    
+    # Clean up DataLoader to free memory
+    del dataset
+    gc.collect()
+    torch.cuda.empty_cache() # Only needed if you're using CUDA
+
+    
+    
+    return epoch_loss, epoch_acc, epoch_test_acc
+
