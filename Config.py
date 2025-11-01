@@ -16,7 +16,7 @@ def get_args():
     parser.add_argument('--local_model_name', type=str, default="ResNet18")
     parser.add_argument('--num_train_samples', type=int, default=10000)
     parser.add_argument('--num_test_samples', type=int, default=1000)
-    parser.add_argument('--dataset', type=str, default="EuroSAT")
+    parser.add_argument('--dataset', type=str, default="fashion_mnist")
 
     parser.add_argument('--num_synth_img_per_class', type=int, default=100)
     parser.add_argument('--num_prompts', type=int, default=10)
