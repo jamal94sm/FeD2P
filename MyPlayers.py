@@ -205,7 +205,7 @@ class Device():
         elif args.local_model_name=="EfficientNet":
             self.model = MyModels.EfficientNet(data["train"]["image"][0].shape, self.num_classes).to(args.device) #EfficientNet
 
-        MyUtils.Model_Size(self.model)
+        MyUtils.model_size(self.model)
 
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.local_learning_rate)
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=100, eta_min=0)
