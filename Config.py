@@ -5,7 +5,7 @@ import torch
 
 
 # ===================== Argument Parsing =====================
-def get_arguments():
+def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
 
     parser.add_argument('--device', type=str, default="cuda" if torch.cuda.is_available() else "cpu") # for runing on GPU
