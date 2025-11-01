@@ -4,8 +4,12 @@ import tensorflow as tf
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from Config import args
 import pandas as pd
+
+from Config import get_args
+args = get_args()
+
+
 
 
 ##############################################################################################################
