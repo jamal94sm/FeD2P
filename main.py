@@ -71,22 +71,13 @@ def clean_up_memory(*args):
 ##############################################################################################################
 ##############################################################################################################
 
-dataset_loaders = {
-    "cifar10": MyDatasets.load_cifar10,
-    "eurosat": MyDatasets.load_eurosat,
-    "svhn": MyDatasets.load_svhn,
-    "fashion_mnist": MyDatasets.load_fashion_mnist
-}
-
-
-
 def main():
 
     device = torch.device(args.device)
     print(f'Device: {device}')
     
     # ===================== Build public dataset =====================
-    
+    '''
     synth_img_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/EuroSAT"
     #public_data = MyUtils.load_synthetic_images( name_classes, data_dir=synth_img_dir, max_per_class=args.num_synth_img_per_class)
     if "sidclip" in args.setup or "open_vocab" in args.setup: 
@@ -103,7 +94,10 @@ def main():
     id = args.num_clients-1
     last_client = MyPlayers.Device(id, distributed_dataset[id], num_classes, name_classes , None)
     public_data_2 = last_client.data
-    
+    '''
+
+    public_data = synthetic_public_data
+    public_data_2 = original_public_data
 
     # ===================== Client and Server Setup =====================
     clients = [ MyPlayers.Device( id, distributed_dataset[id], num_classes, name_classes, public_data ) for id in range(args.num_clients-1) ]
@@ -353,18 +347,35 @@ def main():
 
 ##############################################################################################################
 ##############################################################################################################
+
+dataset_loaders = {
+    "cifar10": MyDatasets.load_cifar10,
+    "eurosat": MyDatasets.load_eurosat,
+    "svhn": MyDatasets.load_svhn,
+    "fashion_mnist": MyDatasets.load_fashion_mnist
+}
+
+
+
 if __name__ == "__main__":
-    
+    args = get_arguments()
     set_seed(42)
+    
+    loader = dataset_loaders.get(args.dataset.lower())
+    if loader is None:
+        raise ValueError(f"Unknown dataset: {args.dataset}")
 
-    # ===================== Dataset and Model Loading =====================
-    Dataset, num_classes, name_classes = MyDatasets.load_data_from_Huggingface()
-    print("\n class names: \n", name_classes)
+    Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples)
 
 
-    # ===================== Data Distribution =====================
-    distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes)
-    print("\n ]data distribution of devices: \n", num_samples)
+    distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes, args.alpha_dirichlet, args.num_clients)
+    print("\n data distribution of devices: \n", num_samples)
+
+
+    synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
+                                                  image_size = dataset["train"]["image"][0].shape[-2:], 
+                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/EuroSAT",
+                                                  max_per_class=args.num_synth_img_per_class)
 
 
 
@@ -372,9 +383,9 @@ if __name__ == "__main__":
     # ft: clip is fine-tuned --- mean: average of descriptions' embedding is used for refrence
     # M: multiple descriptions --- sift: only true_labeled soft labels are shared with the server
     configurations = [
-        {"setup": "local"},
         {"setup": "proposed_yn"},
         {"setup": "fedmd_yn"},
+        {"setup": "local"},
         {"setup": "fedavg"},
         {"setup": "proposed_real_yn"},
         #{"setup": "fedmd_synth_yn"},
