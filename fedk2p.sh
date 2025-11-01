@@ -1,16 +1,17 @@
 #!/bin/bash
 #SBATCH --account=def-arashmoh
 #SBATCH --nodes=1
-#SBATCH --gpus=a100:1  # Graham: t4 or v100 or a100 or dgx or a5000 or h100; Narval: a100, a100_4g.20g; Cedar: p100, p100l, v100l, a40
+#SBATCH --gpus-per-node=a100:1       # Narval: a100, a100_4g.20g; Cedar: p100, p100l, v100l, a40
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=4 # 8, 16
-#SBATCH --mem=40G               # memory per node (ex: 16G) you can get more 
-#SBATCH --time=20:00:00 		   # time period you need for your code (it is 12 hours for example)
-#SBATCH --mail-user=<jamal73sm@gmail.com> 	# replace with your email address to get emails to know when it is started or failed. 
+#SBATCH --cpus-per-task=1            # adjust (e.g., 8 or 16 if needed)
+#SBATCH --mem=40G                    # memory per node
+#SBATCH --time=06:00:00               # job time limit (HH:MM:SS)
+#SBATCH --mail-user=jamal73sm@gmail.com
 #SBATCH --mail-type=ALL
 
 
-#cd /home/shahab33/projects/def-arashmoh/shahab33/FeD2P #Cedar
+
+#cd /home/shahab33/projects/def-arashmoh/shahab33/GenFKD #Cedar
 
 #cd /project/def-arashmoh/shahab33/Rohollah/projects/FeD2P #Graham
 
@@ -28,7 +29,14 @@ module load cuda
 
 source /home/shahab33/fed2p/bin/activate #Narval
 
-#python main1.py --local_model_name "ResNet20" --num_train_samples 10000 --alpha_dirichlet 10 --output_name "ResNet20_10K_alpha10_"  	# this is the direction and the name of your code
-python main2.py
+python main.py --local_model_name "ResNet18" --dataset "EuroSAT" --num_train_samples 11000 --alpha_dirichlet 10 --rounds 20 --num_synth_img_per_class 100 --output_name "_ResNet18_EuroSAT_20K_alpha10_synth100"
+#python main.py --local_model_name "ResNet18" --dataset "cifar10" --num_train_samples 33000 --alpha_dirichlet 10 --rounds 50 --num_synth_img_per_class 300 --output_name "_RN18_30K_alpha10_synth300_"
 
-#python openVocab.py
+
+#3export HF_HOME=/home/shahab33/scratch/huggingface_cache
+#export TRANSFORMERS_CACHE=$HF_HOME
+#export DIFFUSERS_CACHE=$HF_HOME
+#export HUGGINGFACE_HUB_CACHE=$HF_HOME
+
+
+#python ImgGen.py
