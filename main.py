@@ -7,17 +7,16 @@ import matplotlib.pyplot as plt
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
-
+import MyUtils
 import MyDatasets
 import MyModels
 import MyPlayers
-import MyUtils
 import torchvision
 import time
 import json
 import os
 import gc
-from Config import args 
+from Config import get_arguments 
 import time
 import psutil
 
@@ -71,6 +70,16 @@ def clean_up_memory(*args):
 
 ##############################################################################################################
 ##############################################################################################################
+
+dataset_loaders = {
+    "cifar10": MyDatasets.load_cifar10,
+    "eurosat": MyDatasets.load_eurosat,
+    "svhn": MyDatasets.load_svhn,
+    "fashion_mnist": MyDatasets.load_fashion_mnist
+}
+
+
+
 def main():
 
     device = torch.device(args.device)
