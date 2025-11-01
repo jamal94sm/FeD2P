@@ -40,5 +40,7 @@ def get_args():
     return parser.parse_args()
 
 
+args = get_args()
+
 
 
