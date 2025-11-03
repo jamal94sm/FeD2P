@@ -142,6 +142,7 @@ def main():
                 client.local_selective_training(public_data_2, eval=False)
                 print(f'Client: {client.ID:<10} train_acc: {client.Acc[-1]:<8.2f} test_acc: {client.test_Acc[-1]:<8.2f}')
             continue
+        
         #==================================================================
         elif 'fedavg' in args.setup:
             for client in clients:
@@ -150,6 +151,7 @@ def main():
                 print(f'Client: {client.ID:<10} train_acc: {client.Acc[-1]:<8.2f} test_acc: {client.test_Acc[-1]:<8.2f}')
             server.fedavg_aggregation_and_implanting()
             continue
+        
         #==================================================================
         elif 'fedmd' in args.setup:
             for client in clients:
@@ -171,6 +173,7 @@ def main():
                     )
             agg = server.aggregation()
             continue
+        
         #==================================================================
         elif 'fedmd_synth' in args.setup:
             for client in clients:
@@ -192,6 +195,7 @@ def main():
                     )
             agg = server.aggregation()
             continue
+        
         #==================================================================
         elif 'zero_shot' in args.setup:
             for client in clients:
@@ -203,6 +207,7 @@ def main():
                     )
                 print(f'Client: {client.ID:<10} train_acc: {client.Acc[-1]:<8.2f} test_acc: {client.test_Acc[-1]:<8.2f}')
             continue
+        
         #==================================================================
         elif "proposed_real" in args.setup:
             for client in clients:
@@ -227,6 +232,7 @@ def main():
             server.distill_generator(server.public_data, agg)
             general_knowledge = server.get_general_knowledge()
             continue
+        
         #==================================================================
         elif "proposed" in args.setup:
             for client in clients:
@@ -251,6 +257,7 @@ def main():
             server.distill_generator(server.public_data, agg)
             general_knowledge = server.get_general_knowledge()
             continue
+        
         #==================================================================
         elif 'open_vocab' in args.setup:
 
@@ -261,23 +268,7 @@ def main():
                 proto = True if "proto" in args.setup else False,
                 )
             client.test_Acc.append(MyUtils.Evaluate(client.model,  client.data["test"]["image"], client.data["test"]["label"], device)[0])
-        #==================================================================
-        elif 'fl_vocab' in args.setup:
-            if round == 0:
-                old_local_epochs = args.local_epochs
-                args.local_epochs = args.rounds
-                for client in clients:
-                    client.local_distillation(
-                        client.public_data,
-                        zero_shot_logits, 
-                        proto = True if "proto" in args.setup else False,
-                        )
-                args.local_epochs = old_local_epochs
-
-            for client in clients:
-                client.local_training()
-                print(f'Client: {client.ID:<10} train_acc: {client.Acc[-1]:<8.2f} test_acc: {client.test_Acc[-1]:<8.2f}')
-            continue
+            
         #==================================================================
         elif 'sidclip' in args.setup:
             client = clients[0]
@@ -317,6 +308,7 @@ def main():
                 args.local_epochs = old_local_epochs
 
                 client.test_Acc.append( MyUtils.Evaluate(client.model,  client.data["test"]["image"], client.data["test"]["label"], device)[0] )
+       
         #=================================================================
         elif "koala" in args.setup: 
             for client in clients:
@@ -377,13 +369,13 @@ if __name__ == "__main__":
     print("\n data distribution of devices: \n", num_samples)
 
 
-    #synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
-    #                                              image_size = Dataset["train"]["image"][0].shape[-2:], 
-    #                                              data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/Fashion",
-    #                                              max_per_class=args.num_synth_img_per_class)
+    synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
+                                                  image_size = Dataset["train"]["image"][0].shape[-2:], 
+                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/Fashion",
+                                                  max_per_class=args.num_synth_img_per_class)
 
 
-    synthetic_public_data = original_public_data
+    #synthetic_public_data = original_public_data
     
 
     # ===================== Run for each configuration =====================
@@ -397,9 +389,8 @@ if __name__ == "__main__":
         {"setup": "proposed_real_yn"},
         #{"setup": "fedmd_synth_yn"},
         #{"setup": "zero_shot"},
-        #{"setup": "open_vocab"},
         #{"setup": "koala"},
-        #{"setup": "fl_vocab"},
+        #{"setup": "open_vocab"},
         #{"setup": "sidclip"}
     ]
 
