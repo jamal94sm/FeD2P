@@ -58,4 +58,3 @@ def data_distributing(centralized_data, num_classes, alpha_dirichlet, num_client
 
 
 
-
