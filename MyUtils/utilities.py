@@ -566,3 +566,45 @@ def Just_Train(model, data, optimizer, scheduler, loss_fn,  batch_size, epochs, 
     
     return epoch_loss, epoch_acc, epoch_test_acc
 
+##############################################################################################################
+def adjust_temperature(inputs, iteration, optimal_temperature, is_softmax, batch_size=512):
+    def change_temperature(probabilities: torch.Tensor, temperature: float) -> torch.Tensor:
+        scaled_logits = torch.log(probabilities) / temperature
+        adjusted_probs = torch.nn.functional.softmax(scaled_logits, dim=-1)
+        return adjusted_probs
+
+    def entropy(probabilities):
+        # Compute entropy in batches to save memory
+        ents = []
+        with torch.no_grad():
+            for i in range(0, probabilities.size(0), batch_size):
+                batch = probabilities[i:i+batch_size]
+                batch_entropy = -torch.sum(batch * torch.log2(batch + 1e-12), dim=1)
+                ents.append(batch_entropy)
+        return torch.cat(ents)
+
+    def find_temperature(inputs, down_entropy, up_entropy):
+        if is_softmax:
+            inputs = torch.log(inputs + 1e-12)
+
+        temps = torch.logspace(-2, 1, steps=50, device='cpu').to(inputs.device)
+        last_probs = None
+        for temp in temps:
+            probs = torch.nn.functional.softmax(inputs / temp, dim=1)
+            current_entropy = torch.mean(entropy(probs))
+            last_probs = probs
+            if down_entropy < current_entropy < up_entropy:
+                return probs, temp
+        return last_probs, temp
+
+    with torch.no_grad():
+        if iteration == 0:
+            input_length = inputs.shape[-1]
+            log2_input_len = torch.log2(torch.tensor(float(input_length), device=inputs.device))
+            up_entropy = 0.99 * log2_input_len
+            down_entropy = 0.95 * log2_input_len
+            probabilities, optimal_temperature = find_temperature(inputs, down_entropy, up_entropy)
+        else:
+            probabilities = torch.nn.functional.softmax(inputs / optimal_temperature, dim=1)
+
+    return probabilities, optimal_temperature
