@@ -366,7 +366,7 @@ if __name__ == "__main__":
 
     Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
     
-    
+    '''
     name_classes = [
         "T-shirt",
         "Trouser",
@@ -379,14 +379,14 @@ if __name__ == "__main__":
         "Bag",
         "Ankle boot"
     ]
-
+'''
     distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes, args.alpha_dirichlet, args.num_clients)
     print("\n data distribution of devices: \n", num_samples)
 
 
     synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
                                                   image_size = Dataset["train"]["image"][0].shape[-2:], 
-                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/Fashion",
+                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/CIFAR10",
                                                   max_per_class=args.num_synth_img_per_class)
 
 
