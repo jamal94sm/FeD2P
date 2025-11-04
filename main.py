@@ -364,6 +364,19 @@ if __name__ == "__main__":
 
     Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
     
+    
+    name_classes = [
+        "T-shirt",
+        "Trouser",
+        "Pullover",
+        "Dress",
+        "Coat",
+        "Sandal",
+        "Shirt",
+        "Sneaker",
+        "Bag",
+        "Ankle boot"
+    ]
 
     distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes, args.alpha_dirichlet, args.num_clients)
     print("\n data distribution of devices: \n", num_samples)
