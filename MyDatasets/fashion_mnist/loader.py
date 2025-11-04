@@ -83,9 +83,23 @@ def prepare_dataset(data, num_classes, samples_per_class):
 
 ######################################################################################################
 ######################################################################################################
+import os
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
-    loaded_dataset = hf_load_dataset("fashion_mnist", split=["train[:100%]", "test[:100%]"])
+    try:
+        # Try loading from local cache only
+        loaded_dataset = hf_load_dataset(
+            "fashion_mnist",
+            split=["train[:100%]", "test[:100%]"],
+            download_mode="reuse_dataset_if_exists"
+        )
+    except Exception as e:
+        print("Local cache not found or failed to load. Trying to download from internet...")
+        # Retry with download if local load fails
+        loaded_dataset = hf_load_dataset(
+            "fashion_mnist",
+            split=["train[:100%]", "test[:100%]"]
+        )
 
     name_classes = loaded_dataset[0].features["label"].names
     num_classes = len(name_classes)
@@ -102,7 +116,6 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     public_data = DatasetDict({'train': public_train_data, 'test': None})
 
     return dataset, num_classes, name_classes, public_data
-
 ######################################################################################################
 ######################################################################################################
 
