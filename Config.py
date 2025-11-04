@@ -66,7 +66,7 @@ def get_args():
     parser.add_argument('--num_public_samples', type=int, default=50)
     parser.add_argument('--alpha_dirichlet', type=float, default=10)
     
-    parser.add_argument('--dataset', type=str, default="fashion_mnist") 
+    parser.add_argument('--dataset', type=str, default="cifar10") 
     parser.add_argument('--num_synth_img_per_class', type=int, default=5)
     parser.add_argument('--num_prompts', type=int, default=10)
     parser.add_argument('--global_epochs', type=int, default=5)
