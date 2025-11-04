@@ -106,7 +106,7 @@ def main():
     public_data_2 = original_public_data
 
     # ===================== Client and Server Setup =====================
-    clients = [ MyPlayers.Device( id, distributed_dataset[id], num_classes, name_classes, public_data ) for id in range(args.num_clients-1) ]
+    clients = [ MyPlayers.Device( id, distributed_dataset[id], num_classes, name_classes, public_data ) for id in range(args.num_clients) ]
 
 
 
