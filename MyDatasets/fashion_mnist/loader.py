@@ -49,7 +49,7 @@ def normalization(batch):
 
 
 
-def prepare_dataset(data, num_classes, samples_per_class):
+def prepare_dataset(data):
     if "image" not in data.column_names:
         data = data.rename_column(data.column_names[0], "image")
     if "label" not in data.column_names:
@@ -57,29 +57,17 @@ def prepare_dataset(data, num_classes, samples_per_class):
 
     data = data.cast_column("image", datasets.Image())
 
-    # Group indices by class
-    class_to_indices = defaultdict(list)
-    for idx, label in enumerate(data["label"]):
-        class_to_indices[label].append(idx)
-
-    selected_indices = []
-    for label in range(num_classes):
-        indices = class_to_indices[label]
-        selected = random.sample(indices, min(samples_per_class, len(indices)))
-        selected_indices.extend(selected)
-
-    sampled_data = data.select(selected_indices)
-
     # Resize before converting to torch
-    sampled_data = sampled_data.map(resize_and_repeat, batched=True)
+    data = data.map(resize_and_repeat, batched=True)
 
     # Convert to tensor
-    sampled_data = sampled_data.map(normalization, batched=True)
+    data = data.map(normalization, batched=True)
 
-    sampled_data.set_format("torch", columns=["image", "label"])
+    data.set_format("torch", columns=["image", "label"])
+
+    return data
 
 
-    return sampled_data
 
 ######################################################################################################
 ######################################################################################################
@@ -87,7 +75,7 @@ import os
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
-        # Try loading from local cache only
+        # Load full training and test sets
         loaded_dataset = hf_load_dataset(
             "fashion_mnist",
             split=["train[:100%]", "test[:100%]"],
@@ -95,7 +83,6 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         )
     except Exception as e:
         print("Local cache not found or failed to load. Trying to download from internet...")
-        # Retry with download if local load fails
         loaded_dataset = hf_load_dataset(
             "fashion_mnist",
             split=["train[:100%]", "test[:100%]"]
@@ -104,13 +91,19 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     name_classes = loaded_dataset[0].features["label"].names
     num_classes = len(name_classes)
 
-    samples_per_class_train = num_train_samples // num_classes
-    samples_per_class_test = num_test_samples // num_classes
-    samples_per_class_public = num_public_samples // num_classes
+    # Shuffle full training set once
+    full_train = loaded_dataset[0].shuffle(seed=42)
 
-    train_data = prepare_dataset(loaded_dataset[0], num_classes, samples_per_class_train)
-    test_data = prepare_dataset(loaded_dataset[1], num_classes, samples_per_class_test)
-    public_train_data = prepare_dataset(loaded_dataset[0], num_classes, samples_per_class_public)
+    # Slice non-overlapping subsets
+    train_slice = full_train.select(range(0, num_train_samples))
+    test_slice = full_train.select(range(num_train_samples, num_train_samples + num_test_samples))
+    public_slice = full_train.select(range(num_train_samples + num_test_samples,
+                                           num_train_samples + num_test_samples + num_public_samples))
+
+    # Prepare each subset
+    train_data = prepare_dataset(train_slice)
+    test_data = prepare_dataset(test_slice)
+    public_train_data = prepare_dataset(public_slice)
 
     dataset = DatasetDict({"train": train_data, "test": test_data})
     public_data = DatasetDict({'train': public_train_data, 'test': None})
