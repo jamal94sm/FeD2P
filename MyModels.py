@@ -66,11 +66,17 @@ class clip_plus_linear_head(nn.Module):
 
 ##############################################################################################################
 ##############################################################################################################
+
 def load_clip_model():
     model_name = args.Foundation_model
-    model = transformers.CLIPModel.from_pretrained(model_name)
-    processor = transformers.CLIPProcessor.from_pretrained(model_name, use_fast=False)
-    tokenizer = transformers.AutoTokenizer.from_pretrained(model_name, use_fast=False)
+
+    # Set environment variable to force offline mode
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
+    # Load from local cache or specified path
+    model = transformers.CLIPModel.from_pretrained(model_name, local_files_only=True)
+    processor = transformers.CLIPProcessor.from_pretrained(model_name, local_files_only=True, use_fast=False)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(model_name, local_files_only=True, use_fast=False)
 
     if "BN" in args.setup: 
         print("Unfreeze LayerNorm layers in the image encoder")
@@ -83,6 +89,7 @@ def load_clip_model():
                     param.requires_grad = True
                     
     return model, processor, tokenizer
+
 ##############################################################################################################
 ##############################################################################################################
 class LLM(torch.nn.Module):
