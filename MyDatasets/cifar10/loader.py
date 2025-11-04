@@ -28,78 +28,56 @@ def normalization(batch):
 
 ######################################################################################################
 ######################################################################################################
+def prepare_dataset(data):
+    if "image" not in data.column_names:
+        data = data.rename_column(data.column_names[0], "image")
+    if "label" not in data.column_names:
+        data = data.rename_column(data.column_names[1], "label")
 
-def build_public_data(full_train_data, num_classes, num_samples):
-    # Ensure correct column names
-    if "image" not in full_train_data.column_names:
-        full_train_data = full_train_data.rename_column(full_train_data.column_names[0], "image")
-    if "label" not in full_train_data.column_names:
-        full_train_data = full_train_data.rename_column(full_train_data.column_names[1], "label")
+    data.set_format("torch", columns=["image", "label"])
 
-    # Group indices by class
-    class_to_indices = defaultdict(list)
-    for idx, label in enumerate(full_train_data["label"]):
-        class_to_indices[label].append(idx)
-
-    public_indices = []
-    samples_per_class = int(num_samples // num_classes)
-    for label in range(num_classes):
-        selected = random.sample(class_to_indices[label], min(samples_per_class, len(class_to_indices[label])))
-        public_indices.extend(selected)
-
-    # Select samples directly from the dataset
-    public_train = full_train_data.select(public_indices)
-    public_train.set_format("torch", columns=["image", "label"])  # Convert to torch tensors
-
-    # Normalize image tensors to float32
+    # Normalize image tensors to float32 in [0, 1]
     def normalize(example):
         example["image"] = example["image"].float() / 255.0
         return example
 
-    public_train = public_train.map(normalize)
+    data = data.map(normalize)
 
-    public_test = None
+    return data
 
-    return DatasetDict({'train': public_train, 'test': public_test})
 
-######################################################################################################
-######################################################################################################
 
-def load_dataset(num_train_samples, num_test_samples):
-    loaded_dataset = hf_load_dataset("cifar10", split=['train[:50%]', 'test[:50%]'])
+################################################################
 
-    name_classes = loaded_dataset[0].features["label"].names
+def load_dataset(num_train_samples, num_test_samples, num_public_samples):
+    try:
+        # Load full training set
+        full_train = hf_load_dataset("cifar10", split="train[:100%]", download_mode="reuse_dataset_if_exists")
+    except Exception as e:
+        print("Local cache not found or failed to load. Trying to download from internet...")
+        full_train = hf_load_dataset("cifar10", split="train[:100%]")
+
+    name_classes = full_train.features["label"].names
     num_classes = len(name_classes)
 
-    public_data = build_public_data(loaded_dataset[0], num_classes, num_train_samples)
+    # Shuffle full training set once
+    full_train = full_train.shuffle(seed=42)
 
-    train_data = ddf(loaded_dataset[0][shuffling(loaded_dataset[0].num_rows, num_train_samples)])
-    test_data = ddf(loaded_dataset[1][shuffling(loaded_dataset[1].num_rows, num_test_samples)])
+    # Slice non-overlapping subsets
+    train_slice = full_train.select(range(0, num_train_samples))
+    test_slice = full_train.select(range(num_train_samples, num_train_samples + num_test_samples))
+    public_slice = full_train.select(range(num_train_samples + num_test_samples,
+                                           num_train_samples + num_test_samples + num_public_samples))
+
+    # Prepare each subset
+    train_data = prepare_dataset(train_slice)
+    test_data = prepare_dataset(test_slice)
+    public_train_data = prepare_dataset(public_slice)
 
     dataset = DatasetDict({"train": train_data, "test": test_data})
-
-    if "image" not in dataset["train"].column_names:
-        dataset = dataset.rename_column(dataset["train"].column_names[0], 'image')
-    if "label" not in dataset["train"].column_names:
-        dataset = dataset.rename_column(dataset["train"].column_names[1], 'label')
-
-    dataset.set_format("torch", columns=["image", "label"])
-
-    if dataset["train"]["image"].max() > 1:
-        dataset = dataset.map(normalization, batched=True)
-
+    public_data = DatasetDict({'train': public_train_data, 'test': None})
 
     return dataset, num_classes, name_classes, public_data
-
-######################################################################################################
-######################################################################################################
-
-
-
-
-
-
-
 
 
 
