@@ -81,6 +81,7 @@ def main():
     device = torch.device(args.device)
     print(f'Device: {device}')
     print(f'Local Model Name: {args.local_model_name}')
+    print(f'Alpha Direclet: {args.alpha_dirichlet}')
     
     # ===================== Build public dataset =====================
     '''
