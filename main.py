@@ -364,10 +364,10 @@ if __name__ == "__main__":
     if loader is None:
         raise ValueError(f"Unknown dataset: {args.dataset}")
 
-    #Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
+    Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
 
     
-    Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples)
+    #Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples)
     print(f'Original Public Data Size: {len(original_public_data["train"])}')
 
     '''
