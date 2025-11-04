@@ -23,7 +23,7 @@ def get_args():
     parser.add_argument('--num_test_samples', type=int, default=1_000)
     parser.add_argument('--num_public_samples', type=int, default=1_000)
     parser.add_argument('--num_synth_img_per_class', type=int, default=100)
-    parser.add_argument('--alpha_dirichlet', type=float, default=10)
+    parser.add_argument('--alpha_dirichlet', type=float, default=0.1)
     
     parser.add_argument('--num_prompts', type=int, default=10)
     parser.add_argument('--global_epochs', type=int, default=5)
