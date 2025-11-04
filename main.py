@@ -364,13 +364,13 @@ if __name__ == "__main__":
     if loader is None:
         raise ValueError(f"Unknown dataset: {args.dataset}")
 
-    #Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
+    Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
 
     
-    Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples)
+    #Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples)
     print(f'Original Public Data Size: {len(original_public_data["train"])}')
 
-    '''
+    
     name_classes = [
         "T-shirt",
         "Trouser",
@@ -383,7 +383,7 @@ if __name__ == "__main__":
         "Bag",
         "Ankle boot"
     ]
-'''
+
     
     distributed_dataset, num_samples = MyDatasets.data_distributing(Dataset, num_classes, args.alpha_dirichlet, args.num_clients)
     print("\n data distribution of devices: \n", num_samples)
@@ -391,7 +391,7 @@ if __name__ == "__main__":
 
     synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
                                                   image_size = Dataset["train"]["image"][0].shape[-2:], 
-                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/CIFAR10",
+                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/Fashion",
                                                   max_per_class=args.num_synth_img_per_class)
 
 
@@ -402,8 +402,8 @@ if __name__ == "__main__":
     # ft: clip is fine-tuned --- mean: average of descriptions' embedding is used for refrence
     # M: multiple descriptions --- sift: only true_labeled soft labels are shared with the server
     configurations = [
-        {"setup": "fedmd_yn"},
         {"setup": "proposed_yn"},
+        {"setup": "fedmd_yn"},
         {"setup": "local"},
         {"setup": "fedavg"},
         {"setup": "proposed_real_yn"},
@@ -433,15 +433,6 @@ if __name__ == "__main__":
         
 
 
-
-
-
-
-
-
-    
-
-    
     # ===================== Data Loading and Plot =====================
     results_dir = "results"  # Directory containing your JSON files    
     stored_arrays = []  # Collect all 'stored' arrays
