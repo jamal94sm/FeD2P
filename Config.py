@@ -60,7 +60,7 @@ def get_args():
     parser.add_argument('--setup', default="local")
     parser.add_argument('--output_name', type=str, default='A')
     parser.add_argument('--num_clients', type=int, default= 3)
-    parser.add_argument('--local_model_name', type=str, default="LightWeight_CNN")
+    parser.add_argument('--local_model_name', type=str, default="ResNet10")
 
     parser.add_argument('--num_train_samples', type=int, default=150)
     parser.add_argument('--num_test_samples', type=int, default=50)
