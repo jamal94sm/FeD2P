@@ -181,7 +181,7 @@ def load_synthetic_images(class_names, image_size, data_dir, max_per_class=100):
     label_tensors = []
 
     # Replace "T-shirt/top" with "T-shirt" if pre
-    class_names = ["T-shirt" if name == "T-shirt / top" else name for name in class_names]
+    #class_names = ["T-shirt" if name == "T-shirt / top" else name for name in class_names]
 
     class_counts = {class_name: 0 for class_name in class_names}
 
