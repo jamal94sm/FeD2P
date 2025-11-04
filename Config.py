@@ -2,7 +2,7 @@
 import argparse
 import torch
 
-
+'''
 # ===================== Argument Parsing =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -45,10 +45,10 @@ def get_args():
 
 args = get_args()
 
-
-
-
 '''
+
+
+
 # ===================== Toy Example =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -64,12 +64,13 @@ def get_args():
     parser.add_argument('--num_train_samples', type=int, default=150)
     parser.add_argument('--num_test_samples', type=int, default=50)
     parser.add_argument('--num_public_samples', type=int, default=50)
-
+    parser.add_argument('--alpha_dirichlet', type=float, default=10)
     
-    parser.add_argument('--dataset', type=str, default="cifar10") 
+    parser.add_argument('--dataset', type=str, default="fashion_mnist") 
     parser.add_argument('--num_synth_img_per_class', type=int, default=5)
     parser.add_argument('--num_prompts', type=int, default=10)
     parser.add_argument('--global_epochs', type=int, default=5)
+    
     
     parser.add_argument('--Foundation_model', type=str, default="openai/clip-vit-base-patch32")
     parser.add_argument('--rounds', type=int, default=3)
@@ -79,7 +80,6 @@ def get_args():
     parser.add_argument('--global_learning_rate', type=float, default=0.01)
     parser.add_argument('--global_batch_size', type=int, default=32)
     parser.add_argument('--default_temp', type=float, default=1)
-    parser.add_argument('--alpha_dirichlet', type=float, default=100)
     parser.add_argument('--load_saved_models', action='store_true')
     parser.add_argument('--generator_name', type=str, default="AttentionModel")
     parser.add_argument('--debug', action='store_true')
@@ -89,4 +89,3 @@ def get_args():
 
 args = get_args()
 
-'''
