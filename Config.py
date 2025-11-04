@@ -15,7 +15,7 @@ def get_args():
     parser.add_argument('--num_clients', type=int, default= 3)
     parser.add_argument('--local_model_name', type=str, default="ResNet18")
 
-    parser.add_argument('--num_train_samples', type=int, default=500)
+    parser.add_argument('--num_train_samples', type=int, default=150)
     parser.add_argument('--num_test_samples', type=int, default=50)
     parser.add_argument('--num_public_samples', type=int, default=50)
 
