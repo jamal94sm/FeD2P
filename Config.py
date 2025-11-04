@@ -2,7 +2,7 @@
 import argparse
 import torch
 
-
+'''
 # ===================== Argument Parsing =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -44,11 +44,11 @@ def get_args():
 
 
 args = get_args()
-
-
-
-
 '''
+
+
+
+
 # ===================== Toy Example =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -59,14 +59,14 @@ def get_args():
     parser.add_argument('--setup', default="local")
     parser.add_argument('--output_name', type=str, default='A')
     parser.add_argument('--num_clients', type=int, default= 3)
-    parser.add_argument('--local_model_name', type=str, default="ResNet10")
+    parser.add_argument('--local_model_name', type=str, default="ResNet18")
 
     parser.add_argument('--num_train_samples', type=int, default=150)
     parser.add_argument('--num_test_samples', type=int, default=50)
     parser.add_argument('--num_public_samples', type=int, default=50)
 
     
-    parser.add_argument('--dataset', type=str, default="fashion_mnist") 
+    parser.add_argument('--dataset', type=str, default="cifar10") 
     parser.add_argument('--num_synth_img_per_class', type=int, default=5)
     parser.add_argument('--num_prompts', type=int, default=10)
     parser.add_argument('--global_epochs', type=int, default=5)
@@ -89,4 +89,3 @@ def get_args():
 
 args = get_args()
 
-'''
