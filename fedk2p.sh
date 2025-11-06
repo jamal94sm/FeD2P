@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1            # adjust (e.g., 8 or 16 if needed)
 #SBATCH --mem=40G                    # memory per node
-#SBATCH --time=14:00:00               # job time limit (HH:MM:SS)
+#SBATCH --time=6:00:00               # job time limit (HH:MM:SS)
 #SBATCH --mail-user=jamal73sm@gmail.com
 #SBATCH --mail-type=ALL
 
