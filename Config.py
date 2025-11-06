@@ -2,7 +2,7 @@
 import argparse
 import torch
 
-'''
+
 # ===================== Argument Parsing =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -44,11 +44,11 @@ def get_args():
 
 
 args = get_args()
+
+
+
+
 '''
-
-
-
-
 # ===================== Toy Example =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -88,3 +88,4 @@ def get_args():
     return parser.parse_args()
 
 args = get_args()
+'''
