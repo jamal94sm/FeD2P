@@ -5,9 +5,11 @@ from datasets import load_dataset as hf_load_dataset, DatasetDict, ClassLabel
 from collections import defaultdict
 import random
 import torchvision.transforms as transforms
-from typing import Tuple, List, Dict, Any
+from typing import Tuple, List, Dict, Any, Optional
+
 
 ######################################################################################################
+# Optional helpers (kept for compatibility with your original code)
 ######################################################################################################
 
 def ddf(x):
@@ -15,13 +17,12 @@ def ddf(x):
     x.set_format("torch")
     return x
 
-######################################################################################################
-######################################################################################################
-
 def shuffling(a, b):
     return np.random.randint(0, a, b)
 
+
 ######################################################################################################
+# Image preprocessing
 ######################################################################################################
 
 resize_transform = transforms.Compose([
@@ -37,20 +38,22 @@ def normalization(batch):
     batch["image"] = [transforms.ToTensor()(img) for img in batch["image"]]
     return batch
 
+
 ######################################################################################################
+# Dataset preparation (label encoding + preprocessing)
 ######################################################################################################
 
-def prepare_dataset(data, class_label: ClassLabel = None):
-    # Ensure canonical column names
+def prepare_dataset(data, class_label: Optional[ClassLabel] = None):
+    # Ensure canonical column names (imagefolder already uses "image" and "label")
     if "image" not in data.column_names:
         data = data.rename_column(data.column_names[0], "image")
     if "label" not in data.column_names:
         data = data.rename_column(data.column_names[1], "label")
 
-    # Cast image to PIL-backed datasets.Image
+    # Cast image column to PIL-backed datasets.Image
     data = data.cast_column("image", datasets.Image())
 
-    # Only encode labels if they're strings (if already ClassLabel/ints -> keep as is)
+    # Encode labels to int if they're strings; if already ClassLabel/ints, skip
     if class_label is not None:
         label_feature = data.features.get("label", None)
         needs_encoding = True
@@ -73,46 +76,22 @@ def prepare_dataset(data, class_label: ClassLabel = None):
     data.set_format("torch", columns=["image", "label"])
     return data
 
+
 ######################################################################################################
+# Uniform sampling utilities
 ######################################################################################################
 
-# The canonical 10 EuroSAT class names (for validation / nice ordering)
+# Canonical EuroSAT 10 class names
 EUROSAT_10 = [
     "AnnualCrop", "Forest", "HerbaceousVegetation", "Highway", "Industrial",
-    "Pasture", "PermanentCrop", "Residential", "River", "SeaLake"
+    "Pasture", "PermanentCrop", "Residential", "River", "SeaLake",
 ]
 
-def _infer_columns(ds) -> Tuple[str, str]:
-    """
-    Try to find the image and label columns robustly.
-    """
-    # Common image column names
-    img_candidates = ["image", "image_path", "img", "path", "file", "filepath"]
-    # Common label column names
-    label_candidates = ["label", "class", "Class", "category", "y", "target"]
-
-    img_col = None
-    for c in img_candidates:
-        if c in ds.column_names:
-            img_col = c
-            break
-    if img_col is None:
-        # Fallback: assume first column is image
-        img_col = ds.column_names[0]
-
-    label_col = None
-    for c in label_candidates:
-        if c in ds.column_names:
-            label_col = c
-            break
-    if label_col is None:
-        # Fallback: assume second column is label
-        label_col = ds.column_names[1] if len(ds.column_names) > 1 else ds.column_names[0]
-
-    return img_col, label_col
-
 def _compute_counts_per_class(total_samples: int, classes: List[Any], seed: int) -> Dict[Any, int]:
-    """Uniform counts per class with fair remainder distribution."""
+    """
+    Uniform counts per class with fair remainder distribution.
+    If total_samples < len(classes), some classes will naturally get 0.
+    """
     rng = random.Random(seed)
     base = total_samples // len(classes)
     rem = total_samples % len(classes)
@@ -124,117 +103,136 @@ def _compute_counts_per_class(total_samples: int, classes: List[Any], seed: int)
     return counts
 
 def _sample_indices_by_counts(available: Dict[Any, List[int]], counts: Dict[Any, int], seed: int) -> List[int]:
+    """
+    Sample requested number of indices per class from available pools,
+    removing sampled indices to prevent overlap across splits.
+    """
     rng = random.Random(seed)
     chosen_all = []
     for cls, need in counts.items():
         pool = available.get(cls, [])
-        if len(pool) < need:
-            raise ValueError(f"Not enough samples in class '{cls}': need {need}, have {len(pool)}")
-        chosen = rng.sample(pool, need)
-        chosen_all.extend(chosen)
-        # remove chosen
-        remaining = list(set(pool) - set(chosen))
-        available[cls] = remaining
+        if need > 0:
+            if len(pool) < need:
+                raise ValueError(f"Not enough samples in class '{cls}': need {need}, have {len(pool)}")
+            chosen = rng.sample(pool, need)
+            chosen_all.extend(chosen)
+            # remove chosen
+            remaining = list(set(pool) - set(chosen))
+            available[cls] = remaining
     return chosen_all
 
-def _class_counts(y_list):
-    counts = defaultdict(int)
-    for y in y_list:
-        counts[y] += 1
-    return dict(counts)
+
+######################################################################################################
+# Main loader using local imagefolder
+######################################################################################################
 
 def load_dataset(num_train_samples: int,
                  num_test_samples: int,
                  num_public_samples: int,
                  seed: int = 42,
+                 data_dir: str = "/home/shahab33/EuroSAT_RGB",
                  require_all_10: bool = True):
     """
-    Load 'mikewang/EuroSAT', then uniformly sample across *all present classes*,
-    creating non-overlapping train/test/public splits.
+    Create uniformly sampled, non-overlapping train/test/public splits from local EuroSAT (RGB) folder.
 
-    If `require_all_10=True`, raises with a helpful report if the dataset does not
-    contain all 10 EuroSAT classes.
+    Parameters
+    ----------
+    num_train_samples : int
+        Total number of training samples to draw uniformly across classes.
+    num_test_samples : int
+        Total number of testing samples to draw uniformly across classes.
+    num_public_samples : int
+        Total number of public-train samples to draw uniformly across classes.
+    seed : int
+        Base seed for deterministic sampling; test/public use seed+1/seed+2.
+    data_dir : str
+        Path to local EuroSAT RGB directory with 10 class subfolders.
+    require_all_10 : bool
+        If True, enforce the presence of all 10 canonical classes.
+
+    Returns
+    -------
+    dataset : datasets.DatasetDict
+        Contains "train" and "test" splits (processed tensors).
+    num_classes : int
+        Number of unique classes present.
+    class_names_out : List[str]
+        Ordered class names used for label encoding.
+    public_data : datasets.DatasetDict
+        Contains "train" split (processed tensors) for public usage; "test" is None.
     """
-    # Load the community dataset you were using
-    full_dataset = hf_load_dataset("mikewang/EuroSAT", split="train[:100%]")
+    # Load entire folder as a single split (all items)
+    full_dataset = hf_load_dataset("imagefolder", data_dir=data_dir, split="train[:100%]")
 
-    # Robustly align columns
-    img_col, label_col = _infer_columns(full_dataset)
-    if img_col != "image":
-        full_dataset = full_dataset.rename_column(img_col, "image")
-    if label_col != "label":
-        full_dataset = full_dataset.rename_column(label_col, "label")
-
-    # Ensure images are typed as datasets.Image
+    # Ensure image is Image type
     full_dataset = full_dataset.cast_column("image", datasets.Image())
 
-    # Determine classes as they appear in the dataset
+    # Determine classes (string or ClassLabel ints)
     labels_raw = full_dataset["label"]
-    # If label feature is ClassLabel -> use ints; else strings
     label_feature = full_dataset.features.get("label", None)
     if isinstance(label_feature, ClassLabel):
-        # numeric labels 0..K-1, with names in label_feature.names
-        unique_classes = list(range(len(label_feature.names)))
+        unique_classes = list(range(len(label_feature.names)))  # numeric labels 0..K-1
         class_names = label_feature.names
         to_name = lambda x: class_names[x]
     else:
-        unique_classes = sorted(set(labels_raw))
-        class_names = unique_classes  # labels are already strings
+        unique_classes = sorted(set(labels_raw))                # string labels
+        class_names = unique_classes
         to_name = lambda x: x
 
-    # Validate presence of all 10 classes (optional)
+    # Validate presence of all 10 classes if requested
     present_names = sorted({to_name(c) for c in unique_classes})
     if require_all_10:
         missing = sorted(set(EUROSAT_10) - set(present_names))
         if missing:
-            # Provide a helpful diagnostic
-            counts_now = _class_counts(labels_raw)
+            # Provide diagnostic and fail fast
+            counts_now = {name: 0 for name in present_names}
+            for y in labels_raw:
+                counts_now[to_name(y)] += 1
             raise RuntimeError(
                 "This dataset copy does not contain all 10 EuroSAT classes.\n"
                 f"Present: {present_names}\n"
                 f"Missing: {missing}\n"
                 f"Per-class counts (raw): {counts_now}\n"
-                "-> Either switch to the official 'eurosat' dataset (once available), "
-                "or set require_all_10=False to sample uniformly over the classes that are present."
+                "-> Ensure your EuroSAT_RGB directory has all 10 class subfolders.\n"
             )
 
     num_classes = len(unique_classes)
 
-    # Build per-class index pools
+    # Group indices by class (keys must match the label values)
     class_to_indices = defaultdict(list)
     for idx, y in enumerate(labels_raw):
         class_to_indices[y].append(idx)
 
-    # Non-overlapping sampling across splits
+    # Copy pools for non-overlapping splits
     available = {k: v.copy() for k, v in class_to_indices.items()}
 
+    # Compute per-class counts (train/test/public), fair remainder distribution
     train_counts  = _compute_counts_per_class(num_train_samples,  unique_classes, seed=seed)
-    test_counts   = _compute_counts_per_class(num_test_samples,   unique_classes, seed=seed+1)
-    public_counts = _compute_counts_per_class(num_public_samples, unique_classes, seed=seed+2)
+    test_counts   = _compute_counts_per_class(num_test_samples,   unique_classes, seed=seed + 1)
+    public_counts = _compute_counts_per_class(num_public_samples, unique_classes, seed=seed + 2)
 
+    # Sample indices without overlap
     train_indices  = _sample_indices_by_counts(available, train_counts,  seed=seed)
-    test_indices   = _sample_indices_by_counts(available, test_counts,   seed=seed+1)
-    public_indices = _sample_indices_by_counts(available, public_counts, seed=seed+2)
+    test_indices   = _sample_indices_by_counts(available, test_counts,   seed=seed + 1)
+    public_indices = _sample_indices_by_counts(available, public_counts, seed=seed + 2)
 
     # Slice datasets
     train_slice  = full_dataset.select(train_indices)
     test_slice   = full_dataset.select(test_indices)
     public_slice = full_dataset.select(public_indices)
 
-    # Build a stable label encoder (string names) for downstream consistency
-    # If we had ClassLabel already, reuse it; otherwise make one from present class names.
+    # Build a stable ClassLabel for downstream consistency
     if isinstance(label_feature, ClassLabel):
         class_label = label_feature
         class_names_out = class_label.names
     else:
-        # Use the canonical EuroSAT order if available; otherwise sorted present names
+        # Prefer canonical EuroSAT order; append any extras (unlikely)
         ordered_names = [c for c in EUROSAT_10 if c in present_names]
-        # Add any extra names not in canonical (unlikely) at the end
         ordered_names += [c for c in present_names if c not in ordered_names]
         class_label = ClassLabel(names=ordered_names)
         class_names_out = ordered_names
 
-    # Prepare datasets (resize, to tensor, and encode if needed)
+    # Prepare datasets (resize, to tensor, and encode labels if needed)
     train_data = prepare_dataset(train_slice,  class_label)
     test_data  = prepare_dataset(test_slice,   class_label)
     public_train_data = prepare_dataset(public_slice, class_label)
@@ -243,3 +241,4 @@ def load_dataset(num_train_samples: int,
     public_data = DatasetDict({"train": public_train_data, "test": None})
 
     return dataset, num_classes, class_names_out, public_data
+
