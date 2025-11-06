@@ -391,7 +391,7 @@ if __name__ == "__main__":
 
     synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
                                                   image_size = Dataset["train"]["image"][0].shape[-2:], 
-                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/CIFAR10",
+                                                  data_dir = "/project/def-arashmoh/shahab33/FedPD/Synthetic_Image/EuroSAT",
                                                   max_per_class=args.num_synth_img_per_class)
 
 
