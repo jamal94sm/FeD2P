@@ -74,22 +74,24 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         print("Local cache not found or failed to load. Downloading from internet...")
         full_dataset = hf_load_dataset("mikewang/EuroSAT", split="train[:100%]")
 
+    # Rename columns for consistency
     full_dataset = full_dataset.rename_column("image_path", "image")
     full_dataset = full_dataset.rename_column("class", "label")
 
+    # Get class info
     unique_classes = sorted(set(full_dataset["label"]))
     class_label = ClassLabel(names=unique_classes)
     num_classes = len(unique_classes)
 
+    # Cast image column to datasets.Image
     full_dataset = full_dataset.cast_column("image", datasets.Image())
 
-    # Group samples by class
+    # Group indices by class
     class_to_indices = defaultdict(list)
     for idx, example in enumerate(full_dataset):
-        label = example["label"]
-        class_to_indices[label].append(idx)
+        class_to_indices[example["label"]].append(idx)
 
-    # Copy indices to avoid overlap
+    # Make a copy of indices to avoid overlap
     available_indices_by_class = {label: indices.copy() for label, indices in class_to_indices.items()}
 
     def sample_uniformly(total_samples, available_indices_by_class):
@@ -97,9 +99,11 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         selected_indices = []
         for label in unique_classes:
             indices = available_indices_by_class[label]
-            selected = random.sample(indices, min(samples_per_class, len(indices)))
+            if len(indices) < samples_per_class:
+                raise ValueError(f"Not enough samples in class '{label}' to fulfill request.")
+            selected = random.sample(indices, samples_per_class)
             selected_indices.extend(selected)
-            # Remove selected to avoid reuse
+            # Remove selected indices to avoid reuse
             available_indices_by_class[label] = list(set(indices) - set(selected))
         return selected_indices
 
