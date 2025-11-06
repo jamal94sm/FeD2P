@@ -63,6 +63,7 @@ def prepare_dataset(data, class_label=None):
 ######################################################################################################
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
+    '''
     try:
         # Try loading from local cache
         full_dataset = hf_load_dataset(
@@ -74,6 +75,9 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         print("Local cache not found or failed to load. Downloading from internet...")
         full_dataset = hf_load_dataset("mikewang/EuroSAT", split="train[:100%]")
 
+    '''
+    full_dataset = hf_load_dataset("mikewang/EuroSAT", split="train[:100%]")
+    
     # Rename columns for consistency
     full_dataset = full_dataset.rename_column("image_path", "image")
     full_dataset = full_dataset.rename_column("class", "label")
