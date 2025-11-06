@@ -366,7 +366,7 @@ if __name__ == "__main__":
 
     Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples, args.num_public_samples)
 
-    
+    print(f'Class Names: {name_classes}')
     #Dataset, num_classes, name_classes, original_public_data = loader(args.num_train_samples, args.num_test_samples)
     print(f'Original Public Data Size: {len(original_public_data["train"])}')
 
