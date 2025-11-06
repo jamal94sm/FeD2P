@@ -62,7 +62,7 @@ def prepare_dataset(data, class_label=None):
 ######################################################################################################
 ######################################################################################################
 
-def load_dataset(num_train_samples, num_test_samples):
+def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     full_dataset = hf_load_dataset("mikewang/EuroSAT")["train"]
     full_dataset = full_dataset.rename_column("image_path", "image")
     full_dataset = full_dataset.rename_column("class", "label")
@@ -73,40 +73,28 @@ def load_dataset(num_train_samples, num_test_samples):
 
     full_dataset = full_dataset.cast_column("image", datasets.Image())
 
-    # Shuffle and select indices
-    train_indices = shuffling(full_dataset.num_rows, num_train_samples)
-    test_indices = shuffling(full_dataset.num_rows, num_test_samples)
+    # Shuffle full dataset
+    full_dataset = full_dataset.shuffle(seed=42)
 
-    train_dataset = full_dataset.select(train_indices)
-    test_dataset = full_dataset.select(test_indices)
+    # Select slices
+    train_slice = full_dataset.select(range(0, num_train_samples))
+    test_slice = full_dataset.select(range(num_train_samples, num_train_samples + num_test_samples))
+    public_slice = full_dataset.select(range(num_train_samples + num_test_samples,
+                                             num_train_samples + num_test_samples + num_public_samples))
 
-    train_data = prepare_dataset(train_dataset, class_label)
-    test_data = prepare_dataset(test_dataset, class_label)
+    # Prepare datasets
+    train_data = prepare_dataset(train_slice, class_label)
+    test_data = prepare_dataset(test_slice, class_label)
+    public_train_data = prepare_dataset(public_slice, class_label)
 
     dataset = DatasetDict({
         "train": train_data,
         "test": test_data
     })
 
-    # Build public data
-    samples_per_class = int(num_train_samples // num_classes)
-    class_to_images = defaultdict(list)
-    for example in full_dataset:
-        label = class_label.str2int(example["label"])
-        class_to_images[label].append(example["image"])
-
-    public_images = []
-    public_labels = []
-
-    for label in range(num_classes):
-        selected = random.sample(class_to_images[label], min(samples_per_class, len(class_to_images[label])))
-        public_images.extend(selected)
-        public_labels.extend([label] * len(selected))
-
-    public_raw = datasets.Dataset.from_dict({'image': public_images, 'label': public_labels})
-    public_raw = public_raw.cast_column("image", datasets.Image())
-    public_train_data = prepare_dataset(public_raw)
-
-    public_data = DatasetDict({'train': public_train_data, 'test': None})
+    public_data = DatasetDict({
+        "train": public_train_data,
+        "test": None
+    })
 
     return dataset, num_classes, unique_classes, public_data
