@@ -73,16 +73,31 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
 
     full_dataset = full_dataset.cast_column("image", datasets.Image())
 
-    # Shuffle full dataset
-    full_dataset = full_dataset.shuffle(seed=42)
+    # Group samples by class
+    class_to_indices = defaultdict(list)
+    for idx, example in enumerate(full_dataset):
+        label = example["label"]
+        class_to_indices[label].append(idx)
 
-    # Select slices
-    train_slice = full_dataset.select(range(0, num_train_samples))
-    test_slice = full_dataset.select(range(num_train_samples, num_train_samples + num_test_samples))
-    public_slice = full_dataset.select(range(num_train_samples + num_test_samples,
-                                             num_train_samples + num_test_samples + num_public_samples))
+    def sample_uniformly(total_samples):
+        samples_per_class = total_samples // num_classes
+        selected_indices = []
+        for label in unique_classes:
+            indices = class_to_indices[label]
+            selected = random.sample(indices, min(samples_per_class, len(indices)))
+            selected_indices.extend(selected)
+        return selected_indices
 
-    # Prepare datasets
+    # Sample uniformly
+    train_indices = sample_uniformly(num_train_samples)
+    test_indices = sample_uniformly(num_test_samples)
+    public_indices = sample_uniformly(num_public_samples)
+
+    # Select and prepare datasets
+    train_slice = full_dataset.select(train_indices)
+    test_slice = full_dataset.select(test_indices)
+    public_slice = full_dataset.select(public_indices)
+
     train_data = prepare_dataset(train_slice, class_label)
     test_data = prepare_dataset(test_slice, class_label)
     public_train_data = prepare_dataset(public_slice, class_label)
