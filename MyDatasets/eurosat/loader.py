@@ -63,7 +63,17 @@ def prepare_dataset(data, class_label=None):
 ######################################################################################################
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
-    full_dataset = hf_load_dataset("mikewang/EuroSAT")["train"]
+    try:
+        # Try loading from local cache
+        full_dataset = hf_load_dataset(
+            "mikewang/EuroSAT",
+            split="train[:100%]",
+            download_mode="reuse_dataset_if_exists"
+        )
+    except Exception as e:
+        print("Local cache not found or failed to load. Downloading from internet...")
+        full_dataset = hf_load_dataset("mikewang/EuroSAT", split="train[:100%]")
+
     full_dataset = full_dataset.rename_column("image_path", "image")
     full_dataset = full_dataset.rename_column("class", "label")
 
@@ -79,19 +89,24 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         label = example["label"]
         class_to_indices[label].append(idx)
 
-    def sample_uniformly(total_samples):
+    # Copy indices to avoid overlap
+    available_indices_by_class = {label: indices.copy() for label, indices in class_to_indices.items()}
+
+    def sample_uniformly(total_samples, available_indices_by_class):
         samples_per_class = total_samples // num_classes
         selected_indices = []
         for label in unique_classes:
-            indices = class_to_indices[label]
+            indices = available_indices_by_class[label]
             selected = random.sample(indices, min(samples_per_class, len(indices)))
             selected_indices.extend(selected)
+            # Remove selected to avoid reuse
+            available_indices_by_class[label] = list(set(indices) - set(selected))
         return selected_indices
 
-    # Sample uniformly
-    train_indices = sample_uniformly(num_train_samples)
-    test_indices = sample_uniformly(num_test_samples)
-    public_indices = sample_uniformly(num_public_samples)
+    # Sample non-overlapping sets
+    train_indices = sample_uniformly(num_train_samples, available_indices_by_class)
+    test_indices = sample_uniformly(num_test_samples, available_indices_by_class)
+    public_indices = sample_uniformly(num_public_samples, available_indices_by_class)
 
     # Select and prepare datasets
     train_slice = full_dataset.select(train_indices)
