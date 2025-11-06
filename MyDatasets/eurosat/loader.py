@@ -24,7 +24,7 @@ def shuffling(a, b):
 ######################################################################################################
 
 resize_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((32, 32)),
     transforms.Lambda(lambda img: img.convert("RGB")),
 ])
 
