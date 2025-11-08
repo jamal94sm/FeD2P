@@ -350,7 +350,7 @@ def main():
 dataset_loaders = {
     "cifar10": MyDatasets.load_cifar10,
     "eurosat": MyDatasets.load_eurosat,
-    "flowers": MyDatasets.flowers,
+    "flowers": MyDatasets.load_flowers,
     "fashion_mnist": MyDatasets.load_fashion_mnist
 }
 
