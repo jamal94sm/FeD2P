@@ -78,26 +78,26 @@ import random
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
-        # Try loading from cache
-        dataset = load_dataset("randall-lab/imagenette", split="train", trust_remote_code=True)
+        # Load full dataset (returns DatasetDict with 'train' and 'test')
+        dataset_dict = load_dataset("randall-lab/imagenette", trust_remote_code=True)
     except Exception as e:
         print("Failed to load Imagenette from cache. Trying to download...")
-        dataset = load_dataset("randall-lab/imagenette", split="train", trust_remote_code=True)
+        dataset_dict = load_dataset("randall-lab/imagenette", trust_remote_code=True)
 
-    # Shuffle and split
-    dataset = dataset.shuffle(seed=42)
+    # Use the 'train' split for slicing
+    full_data = dataset_dict["train"].shuffle(seed=42)
 
-    train_slice = dataset.select(range(0, num_train_samples))
-    test_slice = dataset.select(range(num_train_samples, num_train_samples + num_test_samples))
-    public_slice = dataset.select(range(num_train_samples + num_test_samples,
-                                        num_train_samples + num_test_samples + num_public_samples))
+    train_slice = full_data.select(range(0, num_train_samples))
+    test_slice = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
+    public_slice = full_data.select(range(num_train_samples + num_test_samples,
+                                          num_train_samples + num_test_samples + num_public_samples))
 
     # Apply preprocessing
     train_data = prepare_dataset(train_slice)
     test_data = prepare_dataset(test_slice)
     public_train_data = prepare_dataset(public_slice)
 
-    dataset_dict = DatasetDict({"train": train_data, "test": test_data})
+    dataset = DatasetDict({"train": train_data, "test": test_data})
     public_data = DatasetDict({'train': public_train_data, 'test': None})
 
     num_classes = 10
@@ -107,8 +107,6 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     ]
 
     print(f"Returning Imagenette dataset with {len(train_data)} training samples, {len(test_data)} test samples.")
-
-    return dataset_dict, num_classes, name_classes, public_data
 
     return dataset, num_classes, name_classes, public_data
 
