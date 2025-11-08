@@ -77,14 +77,37 @@ def prepare_dataset(data):
 
 from datasets import load_from_disk, DatasetDict
 
+from collections import defaultdict
+import random
+from datasets import DatasetDict
+
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     dataset_dict = load_from_disk("/home/shahab33/projects/def-arashmoh/shahab33/FeD2P/animals10_hf")  # offline
-
     full_data = dataset_dict["train"].shuffle(seed=42)
-    train_slice  = full_data.select(range(0, num_train_samples))
-    test_slice   = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
-    public_slice = full_data.select(range(num_train_samples + num_test_samples,
-                                          num_train_samples + num_test_samples + num_public_samples))
+
+    # Ensure balanced sampling for training data
+    def balanced_sample(dataset, num_classes, total_samples):
+        class_indices = defaultdict(list)
+        for idx, label in enumerate(dataset["label"]):
+            class_indices[label].append(idx)
+
+        samples_per_class = total_samples // num_classes
+        selected_indices = []
+
+        for label in range(num_classes):
+            indices = class_indices[label]
+            if len(indices) < samples_per_class:
+                raise ValueError(f"Not enough samples for class {label} to ensure balance.")
+            selected_indices.extend(random.sample(indices, samples_per_class))
+
+        return dataset.select(selected_indices)
+
+    train_slice = balanced_sample(full_data, num_classes=10, total_samples=num_train_samples)
+    remaining_indices = list(set(range(len(full_data))) - set(train_slice["id"]))
+    remaining_data = full_data.select(remaining_indices)
+
+    test_slice = remaining_data.select(range(0, num_test_samples))
+    public_slice = remaining_data.select(range(num_test_samples, num_test_samples + num_public_samples))
 
     train_data        = prepare_dataset(train_slice)
     test_data         = prepare_dataset(test_slice)
@@ -94,7 +117,6 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     public_data = DatasetDict({"train": public_train_data, "test": None})
 
     num_classes = 10
-
     name_classes = [
         "butterfly", "cat", "chicken", "cow", "dog",
         "elephant", "horse", "sheep", "spider", "squirrel"
