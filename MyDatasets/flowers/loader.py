@@ -1,107 +1,111 @@
+
 import numpy as np
 import datasets
 import torch
-import random
+from datasets import load_dataset as hf_load_dataset, DatasetDict
 from collections import defaultdict
 import random
-from PIL import Image
 import torchvision.transforms as transforms
 
 
 
+######################################################################################################
+######################################################################################################
 
-######################################################################################################
-######################################################################################################
 def ddf(x):
     x = datasets.Dataset.from_dict(x)
     x.set_format("torch")
     return x
 
+
 ######################################################################################################
 ######################################################################################################
+
+
 def shuffling(a, b):
     return np.random.randint(0, a, b)
 
 ######################################################################################################
 ######################################################################################################
+
+resize_transform = transforms.Compose([
+    transforms.Resize((32, 32)),
+    transforms.Lambda(lambda img: img.convert("RGB")),  # Convert grayscale to RGB
+])
+
+def resize_and_repeat(batch):
+    batch["image"] = [resize_transform(img) for img in batch["image"]]
+    return batch
+
 def normalization(batch):
-    return {
-        "image": [img / 255.0 for img in batch["image"]],
-        "label": batch["label"]
-    }
+    batch["image"] = [transforms.ToTensor()(img) for img in batch["image"]]
+    return batch
+
+
+
+
 
 ######################################################################################################
 ######################################################################################################
 
-def build_public_data(full_dataset, num_classes, num_samples):
-    samples_per_class = int(num_samples // num_classes)
 
-    # Group images by class
-    class_to_images = defaultdict(list)
-    for example in full_dataset:
-        label = example["label"]
-        class_to_images[label].append(example["image"])
 
-    public_images = []
-    public_labels = []
+def prepare_dataset(data):
+    if "image" not in data.column_names:
+        data = data.rename_column(data.column_names[0], "image")
+    if "label" not in data.column_names:
+        data = data.rename_column(data.column_names[1], "label")
 
-    transform = transforms.Compose([
-        transforms.Resize((32, 32)),  # SVHN images are already 32x32
-        transforms.ToTensor()
-    ])
+    data = data.cast_column("image", datasets.Image())
 
-    for label in range(num_classes):
-        selected = random.sample(class_to_images[label], min(samples_per_class, len(class_to_images[label])))
-        for img in selected:
-            image_tensor = transform(img) / 255.0
-            public_images.append(image_tensor)
-            public_labels.append(label)
+    # Resize before converting to torch
+    data = data.map(resize_and_repeat, batched=True)
 
-    public_train = datasets.Dataset.from_dict({'image': public_images, 'label': public_labels})
-    public_test = None
+    # Convert to tensor
+    data = data.map(normalization, batched=True)
 
-    return datasets.DatasetDict({'train': ddf(public_train.to_dict()), 'test': public_test})
+    data.set_format("torch", columns=["image", "label"])
+
+    return data
+
+
 
 ######################################################################################################
 ######################################################################################################
+import os
 
-def load_dataset(num_train_samples, num_test_samples):
+def load_dataset(num_train_samples, num_test_samples, num_public_samples):
+    try:
+        loaded_dataset = hf_load_dataset(
+            "oxford_flowers17",
+            split="train",
+            download_mode="reuse_dataset_if_exists"
+        )
+    except Exception as e:
+        print("Local cache not found or failed to load. Trying to download from internet...")
+        loaded_dataset = hf_load_dataset("oxford_flowers17", split="train")
 
-    # Load SVHN dataset with config name
-    loaded_dataset = datasets.load_dataset("svhn", "cropped_digits", split=["train", "test"])
+    # Oxford Flowers 17 has 17 classes labeled from 0 to 16
+    num_classes = 17
+    name_classes = [f"class_{i}" for i in range(num_classes)]
 
-    # Shuffle and select samples
-    train_indices = shuffling(loaded_dataset[0].num_rows, num_train_samples)
-    test_indices = shuffling(loaded_dataset[1].num_rows, num_test_samples)
+    # Shuffle full dataset
+    full_data = loaded_dataset.shuffle(seed=42)
 
-    # Select subsets
-    train_dataset = loaded_dataset[0].select(train_indices)
-    test_dataset = loaded_dataset[1].select(test_indices)
+    # Slice non-overlapping subsets
+    train_slice = full_data.select(range(0, num_train_samples))
+    test_slice = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
+    public_slice = full_data.select(range(num_train_samples + num_test_samples,
+                                          num_train_samples + num_test_samples + num_public_samples))
 
-    # Decode image column to actual image objects
-    train_dataset = train_dataset.cast_column("image", datasets.Image())
-    test_dataset = test_dataset.cast_column("image", datasets.Image())
+    # Prepare each subset
+    train_data = prepare_dataset(train_slice)
+    test_data = prepare_dataset(test_slice)
+    public_train_data = prepare_dataset(public_slice)
 
-    # Convert to DatasetDict
-    dataset = datasets.DatasetDict({
-        "train": train_dataset,
-        "test": test_dataset
-    })
-
-    # Set format for PyTorch
-    dataset.set_format("torch", columns=["image", "label"])
-
-
-    dataset = dataset.map(normalization, batched=True)
-
-    # Get class names
-    name_classes = loaded_dataset[0].features["label"].names
-    num_classes = len(name_classes)
-
-    # Build public data
-    public_data = build_public_data(loaded_dataset[0], num_classes, num_train_samples)
+    dataset = DatasetDict({"train": train_data, "test": test_data})
+    public_data = DatasetDict({'train': public_train_data, 'test': None})
 
     return dataset, num_classes, name_classes, public_data
-
 ######################################################################################################
 ######################################################################################################
