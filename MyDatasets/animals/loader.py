@@ -77,7 +77,7 @@ def prepare_dataset(data):
 from datasets import load_dataset as hf_load_dataset, DatasetDict
 import random
 
-def load_imagenette_dataset(num_train_samples, num_test_samples, num_public_samples):
+def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
         # Try loading from Hugging Face
         dataset_dict = hf_load_dataset("randall-lab/imagenette")
