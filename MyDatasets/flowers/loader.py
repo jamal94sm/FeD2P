@@ -72,40 +72,65 @@ def prepare_dataset(data):
 
 ######################################################################################################
 ######################################################################################################
+
 import os
+import tarfile
+import urllib.request
+from PIL import Image
+from datasets import Dataset, DatasetDict
+import random
 
-def load_dataset(num_train_samples, num_test_samples, num_public_samples):
-    try:
-        loaded_dataset = hf_load_dataset(
-            "nkirschi/oxford-flowers",
-            split="train",
-            download_mode="reuse_dataset_if_exists"
-        )
-    except Exception as e:
-        print("Local cache not found or failed to load. Trying to download from internet...")
-        loaded_dataset = hf_load_dataset("nkirschi/oxford-flowers", split="train")
+def download_and_extract_flowers17(data_dir="17flowers"):
+    url = "http://www.robots.ox.ac.uk/~vgg/data/flowers/17/17flowers.tgz"
+    tgz_path = os.path.join(data_dir, "17flowers.tgz")
 
-    # This dataset has 102 classes labeled from 0 to 101
-    num_classes = 102
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+
+    if not os.path.exists(tgz_path):
+        print("Downloading Oxford Flowers 17 dataset...")
+        urllib.request.urlretrieve(url, tgz_path)
+        print("Download complete.")
+
+    with tarfile.open(tgz_path) as tar:
+        tar.extractall(path=data_dir)
+        print("Extraction complete.")
+
+def load_dataset(num_train_samples, num_test_samples, num_public_samples, data_dir="17flowers/jpg"):
+    # Download and extract if needed
+    download_and_extract_flowers17(os.path.dirname(data_dir))
+
+    # Load image paths
+    image_files = sorted([f for f in os.listdir(data_dir) if f.endswith(".jpg")])
+    image_paths = [os.path.join(data_dir, f) for f in image_files]
+
+    # Assign labels: 80 images per class, 17 classes
+    labels = [i // 80 for i in range(len(image_paths))]
+
+    # Shuffle and split
+    combined = list(zip(image_paths, labels))
+    random.seed(42)
+    random.shuffle(combined)
+
+    images, labels = zip(*combined)
+
+    train_data = {"image": images[:num_train_samples], "label": labels[:num_train_samples]}
+    test_data = {"image": images[num_train_samples:num_train_samples + num_test_samples],
+                 "label": labels[num_train_samples:num_train_samples + num_test_samples]}
+    public_data = {"image": images[num_train_samples + num_test_samples:num_train_samples + num_test_samples + num_public_samples],
+                   "label": labels[num_train_samples + num_test_samples:num_train_samples + num_test_samples + num_public_samples]}
+
+    # Convert to Hugging Face Dataset and preprocess
+    train_dataset = prepare_dataset(Dataset.from_dict(train_data))
+    test_dataset = prepare_dataset(Dataset.from_dict(test_data))
+    public_dataset = prepare_dataset(Dataset.from_dict(public_data))
+
+    dataset = DatasetDict({"train": train_dataset, "test": test_dataset})
+    public_data = DatasetDict({'train': public_dataset, 'test': None})
+
+    num_classes = 17
     name_classes = [f"class_{i}" for i in range(num_classes)]
 
-    # Shuffle full dataset
-    full_data = loaded_dataset.shuffle(seed=42)
 
-    # Slice non-overlapping subsets
-    train_slice = full_data.select(range(0, num_train_samples))
-    test_slice = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
-    public_slice = full_data.select(range(num_train_samples + num_test_samples,
-                                          num_train_samples + num_test_samples + num_public_samples))
-
-    # Prepare each subset
-    train_data = prepare_dataset(train_slice)
-    test_data = prepare_dataset(test_slice)
-    public_train_data = prepare_dataset(public_slice)
-
-    dataset = DatasetDict({"train": train_data, "test": test_data})
-    public_data = DatasetDict({'train': public_train_data, 'test': None})
-
-    return dataset, num_classes, name_classes, public_data
 ######################################################################################################
 ######################################################################################################
