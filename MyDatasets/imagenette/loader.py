@@ -65,41 +65,42 @@ def build_public_data(full_dataset, num_classes, num_samples):
 ######################################################################################################
 ######################################################################################################
 
-def load_dataset(num_train_samples, num_test_samples):
+from datasets import load_dataset, DatasetDict
+import random
 
-    # Load SVHN dataset with config name
-    loaded_dataset = datasets.load_dataset("svhn", "cropped_digits", split=["train", "test"])
+def load_dataset(num_train_samples, num_test_samples, num_public_samples):
+    try:
+        # Try loading from cache
+        dataset = load_dataset("randall-lab/imagenette", split="train", trust_remote_code=True)
+    except Exception as e:
+        print("Failed to load Imagenette from cache. Trying to download...")
+        dataset = load_dataset("randall-lab/imagenette", split="train", trust_remote_code=True)
 
-    # Shuffle and select samples
-    train_indices = shuffling(loaded_dataset[0].num_rows, num_train_samples)
-    test_indices = shuffling(loaded_dataset[1].num_rows, num_test_samples)
+    # Shuffle and split
+    dataset = dataset.shuffle(seed=42)
 
-    # Select subsets
-    train_dataset = loaded_dataset[0].select(train_indices)
-    test_dataset = loaded_dataset[1].select(test_indices)
+    train_slice = dataset.select(range(0, num_train_samples))
+    test_slice = dataset.select(range(num_train_samples, num_train_samples + num_test_samples))
+    public_slice = dataset.select(range(num_train_samples + num_test_samples,
+                                        num_train_samples + num_test_samples + num_public_samples))
 
-    # Decode image column to actual image objects
-    train_dataset = train_dataset.cast_column("image", datasets.Image())
-    test_dataset = test_dataset.cast_column("image", datasets.Image())
+    # Apply preprocessing
+    train_data = prepare_dataset(train_slice)
+    test_data = prepare_dataset(test_slice)
+    public_train_data = prepare_dataset(public_slice)
 
-    # Convert to DatasetDict
-    dataset = datasets.DatasetDict({
-        "train": train_dataset,
-        "test": test_dataset
-    })
+    dataset_dict = DatasetDict({"train": train_data, "test": test_data})
+    public_data = DatasetDict({'train': public_train_data, 'test': None})
 
-    # Set format for PyTorch
-    dataset.set_format("torch", columns=["image", "label"])
+    num_classes = 10
+    name_classes = [
+        "tench", "English springer", "cassette player", "chain saw", "church",
+        "French horn", "garbage truck", "gas pump", "golf ball", "parachute"
+    ]
 
+    print(f"Returning Imagenette dataset with {len(train_data)} training samples, {len(test_data)} test samples.")
 
-    dataset = dataset.map(normalization, batched=True)
-
-    # Get class names
-    name_classes = loaded_dataset[0].features["label"].names
-    num_classes = len(name_classes)
-
-    # Build public data
-    public_data = build_public_data(loaded_dataset[0], num_classes, num_train_samples)
+    return dataset_dict, num_classes, name_classes, public_data
 
     return dataset, num_classes, name_classes, public_data
 
