@@ -73,16 +73,20 @@ def prepare_dataset(data):
 ######################################################################################################
 ######################################################################################################
 
-from datasets import load_dataset, DatasetDict
+from datasets import load_dataset as hf_load_dataset, DatasetDict
 import random
 
 def load_imagenette_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
-        # Load full dataset (returns DatasetDict with 'train' and 'test')
-        dataset = load_dataset("randall-lab/imagenette", split="train", trust_remote_code=True)
+        # Try loading from Hugging Face
+        dataset_dict = hf_load_dataset("randall-lab/imagenette")
     except Exception as e:
-        print("Failed to load Imagenette from cache. Trying to download...")
-        dataset_dict = load_dataset("randall-lab/imagenette")
+        print("Failed to load Imagenette dataset:", e)
+        return None  # Prevent further errors if loading fails
+
+    # Ensure dataset_dict is assigned before using it
+    if dataset_dict is None or "train" not in dataset_dict:
+        raise ValueError("Imagenette dataset could not be loaded or does not contain a 'train' split.")
 
     # Use the 'train' split for slicing
     full_data = dataset_dict["train"].shuffle(seed=42)
@@ -109,6 +113,5 @@ def load_imagenette_dataset(num_train_samples, num_test_samples, num_public_samp
     print(f"Returning Imagenette dataset with {len(train_data)} training samples, {len(test_data)} test samples.")
 
     return dataset, num_classes, name_classes, public_data
-
 ######################################################################################################
 ######################################################################################################
