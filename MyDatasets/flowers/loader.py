@@ -77,16 +77,16 @@ import os
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
         loaded_dataset = hf_load_dataset(
-            "oxford_flowers17",
+            "nkirschi/oxford-flowers",
             split="train",
             download_mode="reuse_dataset_if_exists"
         )
     except Exception as e:
         print("Local cache not found or failed to load. Trying to download from internet...")
-        loaded_dataset = hf_load_dataset("oxford_flowers17", split="train")
+        loaded_dataset = hf_load_dataset("nkirschi/oxford-flowers", split="train")
 
-    # Oxford Flowers 17 has 17 classes labeled from 0 to 16
-    num_classes = 17
+    # This dataset has 102 classes labeled from 0 to 101
+    num_classes = 102
     name_classes = [f"class_{i}" for i in range(num_classes)]
 
     # Shuffle full dataset
