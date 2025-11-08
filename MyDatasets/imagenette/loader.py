@@ -76,10 +76,10 @@ def prepare_dataset(data):
 from datasets import load_dataset, DatasetDict
 import random
 
-def load_dataset(num_train_samples, num_test_samples, num_public_samples):
+def load_imagenette_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
         # Load full dataset (returns DatasetDict with 'train' and 'test')
-        dataset_dict = load_dataset("randall-lab/imagenette")
+        dataset = load_dataset("randall-lab/imagenette", split="train", trust_remote_code=True)
     except Exception as e:
         print("Failed to load Imagenette from cache. Trying to download...")
         dataset_dict = load_dataset("randall-lab/imagenette")
