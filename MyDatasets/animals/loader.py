@@ -79,17 +79,20 @@ import random
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
-        # Try loading from Hugging Face
-        dataset_dict = hf_load_dataset("randall-lab/imagenette")
+        # Try loading Animals-10 from Hugging Face (offline-first)
+        dataset_dict = hf_load_dataset(
+            "Rapidata/Animals-10",
+            cache_dir="/home/shahab33/scratch/huggingface_cache",
+            local_files_only=True  # ✅ load cached data first
+        )
     except Exception as e:
-        print("Failed to load Imagenette dataset:", e)
-        return None  # Prevent further errors if loading fails
+        print("Failed to load Animals-10 dataset:", e)
+        return None
 
-    # Ensure dataset_dict is assigned before using it
     if dataset_dict is None or "train" not in dataset_dict:
-        raise ValueError("Imagenette dataset could not be loaded or does not contain a 'train' split.")
+        raise ValueError("Animals-10 dataset could not be loaded or does not contain a 'train' split.")
 
-    # Use the 'train' split for slicing
+    # Shuffle and slice
     full_data = dataset_dict["train"].shuffle(seed=42)
 
     train_slice = full_data.select(range(0, num_train_samples))
@@ -107,12 +110,11 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
 
     num_classes = 10
     name_classes = [
-        "tench", "English springer", "cassette player", "chain saw", "church",
-        "French horn", "garbage truck", "gas pump", "golf ball", "parachute"
+        "butterfly", "cat", "chicken", "cow", "dog",
+        "elephant", "horse", "sheep", "spider", "squirrel"
     ]
 
-    print(f"Returning Imagenette dataset with {len(train_data)} training samples, {len(test_data)} test samples.")
-
+    print(f"Returning Animals-10 dataset with {len(train_data)} training samples, {len(test_data)} test samples.")
     return dataset, num_classes, name_classes, public_data
 ######################################################################################################
 ######################################################################################################
