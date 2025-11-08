@@ -392,7 +392,7 @@ if __name__ == "__main__":
 
     synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
                                                   image_size = Dataset["train"]["image"][0].shape[-2:], 
-                                                  data_dir = "/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/imagenette/",
+                                                  data_dir = "/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/flowers/",
                                                   max_per_class=args.num_synth_img_per_class)
 
 
