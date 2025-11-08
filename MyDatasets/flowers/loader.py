@@ -135,7 +135,7 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples, data_d
 
     num_classes = 17
     name_classes = [
-        "daffodil", "snowdrop", "lily_valley", "bluebell", "crocus", "iris",
+        "daffodil", "snowdrop", "lilyvalley", "bluebell", "crocus", "iris",
         "tigerlily", "tulip", "fritillary", "sunflower", "daisy", "coltsfoot",
         "dandelion", "cowslip", "buttercup", "windflower", "pansy"
     ]
