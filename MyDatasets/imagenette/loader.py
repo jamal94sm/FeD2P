@@ -12,55 +12,63 @@ import torchvision.transforms as transforms
 
 ######################################################################################################
 ######################################################################################################
+
 def ddf(x):
     x = datasets.Dataset.from_dict(x)
     x.set_format("torch")
     return x
 
+
 ######################################################################################################
 ######################################################################################################
+
+
 def shuffling(a, b):
     return np.random.randint(0, a, b)
 
 ######################################################################################################
 ######################################################################################################
+
+resize_transform = transforms.Compose([
+    transforms.Resize((32, 32)),
+    transforms.Lambda(lambda img: img.convert("RGB")),  # Convert grayscale to RGB
+])
+
+def resize_and_repeat(batch):
+    batch["image"] = [resize_transform(img) for img in batch["image"]]
+    return batch
+
 def normalization(batch):
-    return {
-        "image": [img / 255.0 for img in batch["image"]],
-        "label": batch["label"]
-    }
+    batch["image"] = [transforms.ToTensor()(img) for img in batch["image"]]
+    return batch
+
+
+
+
 
 ######################################################################################################
 ######################################################################################################
 
-def build_public_data(full_dataset, num_classes, num_samples):
-    samples_per_class = int(num_samples // num_classes)
 
-    # Group images by class
-    class_to_images = defaultdict(list)
-    for example in full_dataset:
-        label = example["label"]
-        class_to_images[label].append(example["image"])
 
-    public_images = []
-    public_labels = []
+def prepare_dataset(data):
+    if "image" not in data.column_names:
+        data = data.rename_column(data.column_names[0], "image")
+    if "label" not in data.column_names:
+        data = data.rename_column(data.column_names[1], "label")
 
-    transform = transforms.Compose([
-        transforms.Resize((32, 32)),  # SVHN images are already 32x32
-        transforms.ToTensor()
-    ])
+    data = data.cast_column("image", datasets.Image())
 
-    for label in range(num_classes):
-        selected = random.sample(class_to_images[label], min(samples_per_class, len(class_to_images[label])))
-        for img in selected:
-            image_tensor = transform(img) / 255.0
-            public_images.append(image_tensor)
-            public_labels.append(label)
+    # Resize before converting to torch
+    data = data.map(resize_and_repeat, batched=True)
 
-    public_train = datasets.Dataset.from_dict({'image': public_images, 'label': public_labels})
-    public_test = None
+    # Convert to tensor
+    data = data.map(normalization, batched=True)
 
-    return datasets.DatasetDict({'train': ddf(public_train.to_dict()), 'test': public_test})
+    data.set_format("torch", columns=["image", "label"])
+
+    return data
+
 
 ######################################################################################################
 ######################################################################################################
