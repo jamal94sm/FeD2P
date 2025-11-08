@@ -72,7 +72,6 @@ def prepare_dataset(data):
 
 ######################################################################################################
 ######################################################################################################
-
 import os
 import tarfile
 import urllib.request
@@ -83,6 +82,12 @@ import random
 def download_and_extract_flowers17(data_dir="17flowers"):
     url = "http://www.robots.ox.ac.uk/~vgg/data/flowers/17/17flowers.tgz"
     tgz_path = os.path.join(data_dir, "17flowers.tgz")
+    extracted_dir = os.path.join(data_dir, "jpg")
+
+    # Check if already extracted
+    if os.path.exists(extracted_dir) and len(os.listdir(extracted_dir)) >= 1360:
+        print("Oxford Flowers 17 dataset already downloaded and extracted.")
+        return
 
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
@@ -129,12 +134,14 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples, data_d
     public_data = DatasetDict({'train': public_dataset, 'test': None})
 
     num_classes = 17
-    name_classes = [f"class_{i}" for i in range(num_classes)]
+    name_classes = [
+        "daffodil", "snowdrop", "lily_valley", "bluebell", "crocus", "iris",
+        "tigerlily", "tulip", "fritillary", "sunflower", "daisy", "coltsfoot",
+        "dandelion", "cowslip", "buttercup", "windflower", "pansy"
+    ]
 
     print(f"Returning dataset with {len(train_dataset)} training samples, {len(test_dataset)} test samples.")
 
     return dataset, num_classes, name_classes, public_data
-
-
 ######################################################################################################
 ######################################################################################################
