@@ -74,38 +74,27 @@ def prepare_dataset(data):
 ######################################################################################################
 ######################################################################################################
 
-from datasets import load_dataset as hf_load_dataset, DatasetDict
-import random
+
+from datasets import load_from_disk, DatasetDict
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
-    try:
-        dataset_dict = hf_load_dataset(
-            "Rapidata/Animals-10",
-            cache_dir="/home/shahab33/scratch/huggingface_cache",
-            local_files_only=True  # offline-first
-        )
-    except Exception as e:
-        print("Failed to load Animals-10 dataset:", e)
-        raise RuntimeError("Animals-10 dataset could not be loaded.")
+    dataset_dict = load_from_disk("/home/shahab33/projects/def-arashmoh/shahab33/FeD2P/animals10_hf")  # offline
 
-    if dataset_dict is None or "train" not in dataset_dict:
-        raise RuntimeError("Animals-10 dataset missing or invalid.")
-
-    # Shuffle and slice
     full_data = dataset_dict["train"].shuffle(seed=42)
-    train_slice = full_data.select(range(0, num_train_samples))
-    test_slice = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
+    train_slice  = full_data.select(range(0, num_train_samples))
+    test_slice   = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
     public_slice = full_data.select(range(num_train_samples + num_test_samples,
                                           num_train_samples + num_test_samples + num_public_samples))
 
-    train_data = prepare_dataset(train_slice)
-    test_data = prepare_dataset(test_slice)
+    train_data        = prepare_dataset(train_slice)
+    test_data         = prepare_dataset(test_slice)
     public_train_data = prepare_dataset(public_slice)
 
     dataset = DatasetDict({"train": train_data, "test": test_data})
-    public_data = DatasetDict({'train': public_train_data, 'test': None})
+    public_data = DatasetDict({"train": public_train_data, "test": None})
 
     num_classes = 10
+
     name_classes = [
         "butterfly", "cat", "chicken", "cow", "dog",
         "elephant", "horse", "sheep", "spider", "squirrel"
