@@ -79,28 +79,25 @@ import random
 
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
-        # Try loading Animals-10 from Hugging Face (offline-first)
         dataset_dict = hf_load_dataset(
             "Rapidata/Animals-10",
             cache_dir="/home/shahab33/scratch/huggingface_cache",
-            local_files_only=True  # ✅ load cached data first
+            local_files_only=True  # offline-first
         )
     except Exception as e:
         print("Failed to load Animals-10 dataset:", e)
-        return None
+        raise RuntimeError("Animals-10 dataset could not be loaded.")
 
     if dataset_dict is None or "train" not in dataset_dict:
-        raise ValueError("Animals-10 dataset could not be loaded or does not contain a 'train' split.")
+        raise RuntimeError("Animals-10 dataset missing or invalid.")
 
     # Shuffle and slice
     full_data = dataset_dict["train"].shuffle(seed=42)
-
     train_slice = full_data.select(range(0, num_train_samples))
     test_slice = full_data.select(range(num_train_samples, num_train_samples + num_test_samples))
     public_slice = full_data.select(range(num_train_samples + num_test_samples,
                                           num_train_samples + num_test_samples + num_public_samples))
 
-    # Apply preprocessing
     train_data = prepare_dataset(train_slice)
     test_data = prepare_dataset(test_slice)
     public_train_data = prepare_dataset(public_slice)
@@ -114,7 +111,6 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         "elephant", "horse", "sheep", "spider", "squirrel"
     ]
 
-    print(f"Returning Animals-10 dataset with {len(train_data)} training samples, {len(test_data)} test samples.")
     return dataset, num_classes, name_classes, public_data
 ######################################################################################################
 ######################################################################################################
