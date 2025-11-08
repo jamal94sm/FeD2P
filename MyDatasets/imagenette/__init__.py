@@ -1,1 +1,1 @@
-from .loader import load_dataset
+from .loader import load_imagenette_dataset
