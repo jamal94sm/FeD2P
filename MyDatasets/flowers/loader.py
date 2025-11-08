@@ -131,6 +131,10 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples, data_d
     num_classes = 17
     name_classes = [f"class_{i}" for i in range(num_classes)]
 
+    print(f"Returning dataset with {len(train_dataset)} training samples, {len(test_dataset)} test samples.")
+
+    return dataset, num_classes, name_classes, public_data
+
 
 ######################################################################################################
 ######################################################################################################
