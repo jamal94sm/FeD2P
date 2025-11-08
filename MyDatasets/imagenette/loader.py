@@ -79,10 +79,10 @@ import random
 def load_dataset(num_train_samples, num_test_samples, num_public_samples):
     try:
         # Load full dataset (returns DatasetDict with 'train' and 'test')
-        dataset_dict = load_dataset("randall-lab/imagenette", trust_remote_code=True)
+        dataset_dict = load_dataset("randall-lab/imagenette")
     except Exception as e:
         print("Failed to load Imagenette from cache. Trying to download...")
-        dataset_dict = load_dataset("randall-lab/imagenette", trust_remote_code=True)
+        dataset_dict = load_dataset("randall-lab/imagenette")
 
     # Use the 'train' split for slicing
     full_data = dataset_dict["train"].shuffle(seed=42)
