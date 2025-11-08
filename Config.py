@@ -12,6 +12,7 @@ def get_args():
 
     parser.add_argument('--setup', default="local")
     parser.add_argument('--output_name', type=str, default='_ResNet18_imagenette_9K_alpha10_')
+    parser.add_argument('--synth_path', type=str, default='_ResNet18_imagenette_9K_alpha10_')
     
     parser.add_argument('--local_model_name', type=str, default="ResNet18")
     parser.add_argument('--dataset', type=str, default="imagenette") # fashion_mnist, cifar10, flowers, eurosat
