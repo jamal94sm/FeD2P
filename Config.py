@@ -14,7 +14,7 @@ def get_args():
     parser.add_argument('--output_name', type=str, default='_ResNet18_imagenette_10K_alpha10_')
     
     parser.add_argument('--local_model_name', type=str, default="ResNet18")
-    parser.add_argument('--dataset', type=str, default="flowers") # fashion_mnist, cifar10, flowers, eurosat
+    parser.add_argument('--dataset', type=str, default="imagenette") # fashion_mnist, cifar10, flowers, eurosat
 
     parser.add_argument('--num_clients', type=int, default= 10)
     parser.add_argument('--rounds', type=int, default=30)
