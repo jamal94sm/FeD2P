@@ -352,7 +352,8 @@ dataset_loaders = {
     "eurosat": MyDatasets.load_eurosat,
     "flowers": MyDatasets.load_flowers,
     "fashion_mnist": MyDatasets.load_fashion_mnist,
-    "imagenette": MyDatasets.load_imagenette
+    "imagenette": MyDatasets.load_imagenette,
+    "animals": MyDatasets.load_animals
 }
 
 
@@ -392,7 +393,7 @@ if __name__ == "__main__":
 
     synthetic_public_data = MyUtils.load_synthetic_images(name_classes, 
                                                   image_size = Dataset["train"]["image"][0].shape[-2:], 
-                                                  data_dir = "/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/flowers/",
+                                                  data_dir = "/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/animals/",
                                                   max_per_class=args.num_synth_img_per_class)
 
 
