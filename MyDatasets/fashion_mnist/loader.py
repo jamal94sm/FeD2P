@@ -89,6 +89,18 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
         )
 
     name_classes = loaded_dataset[0].features["label"].names
+    name_classes = [
+        "T-shirt",
+        "Trouser",
+        "Pullover",
+        "Dress",
+        "Coat",
+        "Sandal",
+        "Shirt",
+        "Sneaker",
+        "Bag",
+        "Ankle boot"
+    ]
     num_classes = len(name_classes)
 
     # Shuffle full training set once
@@ -107,6 +119,7 @@ def load_dataset(num_train_samples, num_test_samples, num_public_samples):
 
     dataset = DatasetDict({"train": train_data, "test": test_data})
     public_data = DatasetDict({'train': public_train_data, 'test': None})
+
 
     return dataset, num_classes, name_classes, public_data
 ######################################################################################################
