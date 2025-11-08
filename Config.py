@@ -2,7 +2,7 @@
 import argparse
 import torch
 
-
+'''
 # ===================== Argument Parsing =====================
 def get_args():
     parser = argparse.ArgumentParser(description="FedD2P")
@@ -11,16 +11,16 @@ def get_args():
     #parser.add_argument('--device',default="mps" if torch.backends.mps.is_available() else "cpu") # for runing on mps MAC OS
 
     parser.add_argument('--setup', default="local")
-    parser.add_argument('--output_name', type=str, default='_ResNet18_imagenette_9K_alpha10_')
-    parser.add_argument('--synth_path', type=str, default="/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/imagenette/")
+    parser.add_argument('--output_name', type=str, default='_ResNet18_animals_10K_alpha10_')
+    parser.add_argument('--synth_path', type=str, default="/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/animals/")
     
     parser.add_argument('--local_model_name', type=str, default="ResNet18")
-    parser.add_argument('--dataset', type=str, default="imagenette") # fashion_mnist, cifar10, flowers, eurosat
+    parser.add_argument('--dataset', type=str, default="animals") # fashion_mnist, cifar10, flowers, eurosat
 
-    parser.add_argument('--num_clients', type=int, default= 9)
+    parser.add_argument('--num_clients', type=int, default= 10)
     parser.add_argument('--rounds', type=int, default=30)
     
-    parser.add_argument('--num_train_samples', type=int, default=9_000)
+    parser.add_argument('--num_train_samples', type=int, default=10_000)
     parser.add_argument('--num_test_samples', type=int, default=1000)
     parser.add_argument('--num_public_samples', type=int, default=1000)
     parser.add_argument('--num_synth_img_per_class', type=int, default=100)
@@ -58,11 +58,12 @@ def get_args():
     #parser.add_argument('--device',default="mps" if torch.backends.mps.is_available() else "cpu") # for runing on mps MAC OS
 
     parser.add_argument('--setup', default="local")
-    parser.add_argument('--output_name', type=str, default='_imagenette_')
-    
+    parser.add_argument('--output_name', type=str, default='_animals_')
+    parser.add_argument('--synth_path', type=str, default="/home/shahab33/projects/def-arashmoh/shahab33/GenFKD/Synthetic_Image/animals/")
+
     parser.add_argument('--num_clients', type=int, default= 2)
     parser.add_argument('--local_model_name', type=str, default="ResNet18")
-    parser.add_argument('--dataset', type=str, default="imagenette") 
+    parser.add_argument('--dataset', type=str, default="animals") 
     
     parser.add_argument('--num_train_samples', type=int, default=100)
     parser.add_argument('--num_test_samples', type=int, default=50)
@@ -89,4 +90,3 @@ def get_args():
 
 args = get_args()
 
-'''
